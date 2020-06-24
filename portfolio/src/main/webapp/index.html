@@ -2,36 +2,63 @@
 <html>
   <head>
     <title>My Portfolio</title>
-    <meta charset="utf-8">
-    <style>
-    body {
-      background-image: url('images/pixelbook-background.png');
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-      background-size: cover;
-    }
-    </style>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      body, html {
+        height:100%;
+        margin:0;
+        font: Arial, Helvetica, sans-serif;
+      }
+    </style>
+    <meta charset="utf-8">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    
+    <style>
+      body {
+        background-image: url('images/pixelbook-background.png');
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+      }
+    </style>
   </head>
 
   <body>
-    <div class="container">
-      <div class="jumbotron">
-        <h1>Shaunna Caffrey</h1>
-        <p>Portfolio</p> 
+    <div class="hero-image">
+      <div class="hero-text">
+        <h1 style="font-size:5vw">Shaunna Caffrey</h1>
+        <p>Intern</p>
       </div>
     </div>
+    <div class="break-container"></div>
+    <div class="grid-container">
+        <div class="grid-item"> I am a University of Michigan student set to graduate in May 2022 with a BS in 
+                                Computer Science. I’ve lived in Michigan most of my life except for ten months 
+                                that I spent nannying in the Netherlands fresh out of high school.
+        </div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item">I am most passionate about the connection between technology and the environment 
+                               and using technology to reduce carbon emissions and the amount of greenhouse 
+                               gases in the atmosphere.
+        </div>
+        <div class="grid-item"></div>
+        <div class="grid-item">At university, I am part of Girls in electrical engineering and computer science 
+                               GEECS), and I am on a project team to create a 21st century Hammond Organ. I also 
+                               participate in IM sports when there is not a global pandemic.
+        </div>
+        <div class="grid-item"></div>
+    </div>
+
+    <div id="break-container"></div>
     <div class="containter" id="content">
-      <div class="well">
-        I am a University of Michigan student set to graduate in May 2022 with a BS in 
-        Computer Science. I’ve lived in Michigan most of my life except for ten months 
-        that I spent nannying in the Netherlands fresh out of high school.<br>
+      <div class="well" style="postition:absolute">
+       <br>
         I am most passionate about the connection between technology and the environment 
         and using technology to reduce carbon emissions and the amount of greenhouse 
         gases in the atmosphere.<br>
@@ -43,6 +70,6 @@
     <img src="images/JR-eye.jpg" alt="Image of art by JR"/>
     <p>Click here to get a random message:</p>
     <button onclick="addRandomGreeting()">Hello</button>
-    <div id="greeting-container"></div>  
+    <div id="break-container"></div>  
   </body>
 </html>
