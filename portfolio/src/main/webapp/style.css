@@ -1,3 +1,10 @@
+body {
+  background: rgb(68, 68, 68);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+
 #content {
   padding-left: 10%;
   padding-right: 10%;
@@ -39,4 +46,21 @@
     text-align: justify;
     padding: 1vw;
     font-size: 20px;
+}
+
+a:link {
+    font-size: larger;
+    padding: 20px;
+    color: darkblue;
+    background-color: transparent;
+    text-decoration: none;
+}
+
+a:visited {
+    color: lightblue;
+}
+
+a:hover {
+    color: blueviolet;
+    text-decoration: underline;
 }
