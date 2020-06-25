@@ -1,9 +1,66 @@
+body {
+  background: rgb(68, 68, 68);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+
 #content {
   padding-left: 10%;
   padding-right: 10%;
   font:arial;
 }
 
-#greeting-container {
+#break-container {
   margin-top: 20px;
+}
+
+.hero-image{
+  background-image: linear-gradient(rgba(0,0,0,.5), rgba(0,0,0,.5)), url(images/back.jpg);
+  height: 90%;
+  background-position: center;
+  background-repeat: none;
+  background-size: cover;
+  position: relative;
+}
+
+.hero-text {
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    padding: 1vw;
+    grid-gap: 1vw;
+}
+
+.grid-item {
+    background-color: wheat;
+    border: 5px solid rgba(255, 255, 255, 0.2);
+    text-align: justify;
+    padding: 1vw;
+    font-size: 20px;
+}
+
+a:link {
+    font-size: larger;
+    padding: 20px;
+    color: darkblue;
+    background-color: transparent;
+    text-decoration: none;
+}
+
+a:visited {
+    color: lightblue;
+}
+
+a:hover {
+    color: blueviolet;
+    text-decoration: underline;
 }
