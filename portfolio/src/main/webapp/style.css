@@ -1,5 +1,5 @@
 body {
-  background: rgb(68, 68, 68);
+  background: #1B161C;
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: cover;
@@ -8,7 +8,7 @@ body {
 #content {
   padding-left: 10%;
   padding-right: 10%;
-  font:arial;
+  font-family: arial;
 }
 
 #break-container {
@@ -37,15 +37,21 @@ body {
     display: grid;
     grid-template-columns: auto auto auto;
     padding: 1vw;
-    grid-gap: 1vw;
+    grid-gap: .5vw;
+}
+
+.grid-text {
+    border-radius: 15px;
+    background-color: #713052;
+    text-align: justify;
+    color: white;
+    padding: 1vw;
+    font-size: 20px;
 }
 
 .grid-item {
-    background-color: wheat;
-    border: 5px solid rgba(255, 255, 255, 0.2);
-    text-align: justify;
-    padding: 1vw;
-    font-size: 20px;
+    border-radius: 15px;
+    background: #713052;
 }
 
 a:link {
@@ -63,4 +69,9 @@ a:visited {
 a:hover {
     color: blueviolet;
     text-decoration: underline;
+}
+
+img {
+    border-radius: 15px;
+    max-width: 100%;
 }
