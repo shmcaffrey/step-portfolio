@@ -66,14 +66,15 @@ var engArr = ["Downward Facing Dog", "Lotus Pose", "Warrior Two", "Pigeon Pose",
   "Upward-facing Intense Stretch Pose", "Tree Pose", "Plow Pose", "Upward Facing Dog"];
 
 yogaReveal.onclick = function() {
-  if (numClick === -1) {
-    document.getElementById("san-text").innerText = "You found it! Keep clicking for more.";
-  }
-  else {
-    document.getElementById("san-text").innerText = sanArr[numClick];
-    document.getElementById("eng-text").innerText = engArr[numClick];
-  }
   numClick++;
   let index = numClick % 8;
   myImg.src = imgArray[index].src;
+  if (numClick === 0) {
+    document.getElementById("san-text").innerText = "You found it! Keep clicking for more.";
+  }
+  else {
+    document.getElementById("san-text").innerText = sanArr[index;
+    document.getElementById("eng-text").innerText = engArr[index];
+  }
+
 }
