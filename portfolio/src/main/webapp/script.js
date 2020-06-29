@@ -73,7 +73,7 @@ yogaReveal.onclick = function() {
     document.getElementById("san-text").innerText = "You found it! Keep clicking for more.";
   }
   else {
-    document.getElementById("san-text").innerText = sanArr[index;
+    document.getElementById("san-text").innerText = sanArr[index];
     document.getElementById("eng-text").innerText = engArr[index];
   }
 
