@@ -78,3 +78,27 @@ yogaReveal.onclick = function() {
   }
 
 }
+
+
+function getName() {
+    console.log('Fetching Name');
+
+    // request html from servlet data
+    const responsePromise = fetch('/data');
+
+    responsePromise.then(handleResponse);
+}
+
+function handleResponse(response) {
+    console.log('Handle name response');
+
+    // converts responde into text
+    const textPromise = response.text();
+
+    textPromise.then(addName);
+}
+
+function addName(name) {
+    const helloContainer = document.getElementById("hello-container");
+    helloContainer.innerText = name;
+}
