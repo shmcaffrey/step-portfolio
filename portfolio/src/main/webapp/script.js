@@ -80,8 +80,8 @@ yogaReveal.onclick = function() {
 }
 
 
-function getName() {
-    console.log('Fetching Name');
+/*function getName() {
+    console.log('Fetching Array');
 
     // request html from servlet data
     const responsePromise = fetch('/data');
@@ -90,7 +90,7 @@ function getName() {
 }
 
 function handleResponse(response) {
-    console.log('Handle name response');
+    console.log('Handle button response');
 
     // converts responde into text
     const textPromise = response.text();
@@ -101,4 +101,27 @@ function handleResponse(response) {
 function addName(name) {
     const helloContainer = document.getElementById("hello-container");
     helloContainer.innerText = name;
+}*/
+
+// To parse JSON into a usable object for javascript
+function getComments() {
+
+    // fetch data from server, parse as json file, then reference coms as an object
+    fetch('/data').then(response => response.json()).then((coms) => {
+        const commentList = document.getElementById("comment-container");
+        commentList.innerText = '';
+        commentList.appendChild(
+            createListElement("Page One: " + coms[0]))
+        commentList.appendChild(
+            createListElement("Page Two: " + coms[1]))
+        commentList.appendChild(
+            createListElement("Page Three: " + coms[2]))
+    });
+}
+
+/** Creates an <li> element containing text. */
+function createListElement(text) {
+  const liElement = document.createElement('li');
+  liElement.innerText = text;
+  return liElement;
 }
