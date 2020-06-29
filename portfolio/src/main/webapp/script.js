@@ -92,7 +92,7 @@ function getName() {
 function handleResponse(response) {
     console.log('Handle name response');
 
-    // converts responde into text
+    // converts response into text
     const textPromise = response.text();
 
     textPromise.then(addName);
