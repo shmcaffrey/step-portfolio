@@ -92,7 +92,7 @@ yogaReveal.onclick = function() {
 function handleResponse(response) {
     console.log('Handle button response');
 
-    // converts responde into text
+    // converts response into text
     const textPromise = response.text();
 
     textPromise.then(addName);
@@ -101,6 +101,7 @@ function handleResponse(response) {
 function addName(name) {
     const helloContainer = document.getElementById("hello-container");
     helloContainer.innerText = name;
+<<<<<<< HEAD
 }*/
 
 // To parse JSON into a usable object for javascript
@@ -151,3 +152,4 @@ function createListElement(text) {
   liElement.innerText = text;
   return liElement;
 }
+
