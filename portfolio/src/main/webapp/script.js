@@ -111,12 +111,38 @@ function getComments() {
         const commentList = document.getElementById("comment-container");
         commentList.innerText = '';
         commentList.appendChild(
-            createListElement("Page One: " + coms[0]))
+            createListElement("Page One: " + coms[0]));
         commentList.appendChild(
-            createListElement("Page Two: " + coms[1]))
+            createListElement("Page Two: " + coms[1]));
         commentList.appendChild(
-            createListElement("Page Three: " + coms[2]))
+            createListElement("Page Three: " + coms[2]));
     });
+}
+
+// For learning promises
+function getCommentsLong() {
+    console.log('fetching JSON');
+
+    const responsePromise = fetch('/data');
+
+    responsePromise.then(handleResponse);
+}
+
+function handleResponse(response) {
+    console.log('convert JSON promise stream to text');
+    const textPromise = response.text();
+    console.log(textPromise);
+    textPromise.then(addListToDom);
+}
+
+function addListToDom(list) {
+    console.log('parsing json text and printing' + list);
+    const commentList = document.getElementById("comment-container");
+    commentList.innerText = '';
+    // list.pageOne does not work as a JSON element should, should this work with array format?
+    commentList.appendChild(
+        createListElement("Page One: " + list.pageOne));
+
 }
 
 /** Creates an <li> element containing text. */

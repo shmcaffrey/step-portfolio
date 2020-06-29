@@ -33,7 +33,7 @@ public class DataServlet extends HttpServlet {
     String pageThree = "Hidden Talents. U/C";
 
 
-    ArrayList<String> arr = new ArrayList<String>();
+    List<String> arr = new ArrayList<String>();
     arr.add(pageOne);
     arr.add(pageTwo);
     arr.add(pageThree);
@@ -44,7 +44,7 @@ public class DataServlet extends HttpServlet {
   }
 
 //  Manual array to Json conversion
-   /* private String convertToJson(ArrayList<String> comments) {
+ private String convertToJson(ArrayList<String> comments) {
     String json = "{";
     json += "\"pageOne\": ";
     json += "\"" + comments.get(0) + "\"";
@@ -56,7 +56,7 @@ public class DataServlet extends HttpServlet {
     json += comments.get(2);
     json += "}";
     return json;
-  }*/
+  }
 
   private String convertJsonUsingGson(ArrayList<String> comments) {
       String json = new Gson().toJson(comments);
