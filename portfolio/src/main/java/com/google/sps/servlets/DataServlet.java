@@ -33,7 +33,7 @@ public class DataServlet extends HttpServlet {
     String pageThree = "Hidden Talents. U/C";
 
 
-    List<String> arr = new ArrayList<String>();
+    ArrayList<String> arr = new ArrayList<String>();
     arr.add(pageOne);
     arr.add(pageTwo);
     arr.add(pageThree);
