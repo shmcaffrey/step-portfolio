@@ -26,14 +26,16 @@ import java.util.ArrayList;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
+  private ArrayList<String> arr = new ArrayList<String>();
 
-  @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-          
-    ArrayList<String> arr = new ArrayList<String>();
+  public void init () {
     arr.add("Homepage with pictures. U/C");
     arr.add("List of projects in a resume way. U/C");
     arr.add("Hidden Talents. U/C");
+  }
+
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     String json = convertJsonUsingGson(arr);
     response.setContentType("application/json;");
