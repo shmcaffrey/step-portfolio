@@ -14,6 +14,9 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
 import com.google.gson.Gson;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
@@ -28,15 +31,8 @@ public class DataServlet extends HttpServlet {
 
   private ArrayList<String> arr = new ArrayList<String>();
 
-  public void init () {
-    arr.add("Homepage with pictures. U/C");
-    arr.add("List of projects in a resume way. U/C");
-    arr.add("Hidden Talents. U/C");
-  }
-
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
     String json = convertJsonUsingGson(arr);
     response.setContentType("application/json;");
     response.getWriter().println(json);
@@ -45,5 +41,16 @@ public class DataServlet extends HttpServlet {
   private String convertJsonUsingGson(ArrayList<String> comments) {
       String json = new Gson().toJson(comments);
       return json;
+  }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    addComment(request);
+    response.sendRedirect("/index.html");
+  }
+
+  private void addComment(HttpServletRequest request) {
+    String userComment = request.getParameter("text-input");
+    arr.add(userComment);
   }
 }

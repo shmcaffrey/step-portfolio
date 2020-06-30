@@ -73,12 +73,10 @@ function getComments() {
     fetch('/data').then(response => response.json()).then((comments) => {
         const commentList = document.getElementById("comment-container");
         commentList.innerText = '';
-        commentList.appendChild(
-            createListElement("Page One: " + comments[0]));
-        commentList.appendChild(
-            createListElement("Page Two: " + comments[1]));
-        commentList.appendChild(
-            createListElement("Page Three: " + comments[2]));
+        console.log("fetching comments");
+        for (i = 0; i < comments.length; i++) {
+          commentList.appendChild(createListElement(comments[i]));
+        }
     });
 }
 

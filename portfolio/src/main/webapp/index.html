@@ -19,7 +19,7 @@
 
   </head>
 
-  <body>
+  <body onload="getComments()">
     <div class="hero-image">
       <div class="hero-text">
         <h1 style="font-size:5vw">Shaunna Caffrey</h1>
@@ -72,9 +72,13 @@
             <img src="images/mtn1.jpg" style="max-width: 100%" title="Fabriano: The beautiful countryside">
         </div>
         <div style="text-align: center" class="grid-text">
-            <h1>Click here to get comments!</h1>
-            <button onclick="getCommentsLong()">Comments Button</button>
-            <ul id="comment-container"></ul>
+          <ul id="comment-container"></ul>
+          <form action="/data" method="POST" style="color:black">
+            <h1>Enter your comment:</h1>
+            <textarea name="text-input"></textarea>
+            <br/>
+            <input type="submit"/>
+          </form>
         </div>
         <div class="grid-item">
             <img src="images/gum.jpg" style="max-width: 100%;" alt="Photo of girl blowing bubblegum"
