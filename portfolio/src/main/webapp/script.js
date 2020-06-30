@@ -72,11 +72,10 @@ function getComments() {
     // fetch data from server, parse as json file, then reference coms as an object
     fetch('/data').then(response => response.json()).then((comments) => {
         const commentList = document.getElementById("comment-container");
-        commentList.innerText = '';
         console.log("fetching comments");
-        for (i = 0; i < comments.length; i++) {
-          commentList.appendChild(createListElement(comments[i]));
-        }
+        comments.forEach((comments) => {
+            commentList.appendChild(createListElement(comments));
+        })
     });
 }
 
