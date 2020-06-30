@@ -12,20 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/**
- * Adds a random greeting to the page.
- */
-function addRandomGreeting() {
-  const greetings =
-      ['Hello world!', '¡Hola Mundo!', '你好，世界！', 'Bonjour le monde!', 'Hallo, Wereld'];
-
-  // Pick a random greeting.
-  const greeting = greetings[Math.floor(Math.random() * greetings.length)];
-
-  // Add it to the page.
-  const greetingContainer = document.getElementById('greeting-container');
-  greetingContainer.innerText = greeting;
-}
 
 let myImg = document.getElementById("yoga-poses");
 let yogaReveal = document.getElementById("yoga-link");
@@ -65,7 +51,7 @@ var sanArr = ["Adho Mukha Svansana", "Padmasana", "Virabhadrasana II", "Kapotasa
 var engArr = ["Downward Facing Dog", "Lotus Pose", "Warrior Two", "Pigeon Pose", "Warrior three",
   "Upward-facing Intense Stretch Pose", "Tree Pose", "Plow Pose", "Upward Facing Dog"];
 
-yogaReveal.onclick = function() {
+yogaReveal.onclick = () => {
   numClick++;
   let index = numClick % 8;
   myImg.src = imgArray[index].src;
@@ -80,43 +66,19 @@ yogaReveal.onclick = function() {
 }
 
 
-/*function getName() {
-    console.log('Fetching Array');
-
-    // request html from servlet data
-    const responsePromise = fetch('/data');
-
-    responsePromise.then(handleResponse);
-}
-
-function handleResponse(response) {
-    console.log('Handle button response');
-
-    // converts response into text
-    const textPromise = response.text();
-
-    textPromise.then(addName);
-}
-
-function addName(name) {
-    const helloContainer = document.getElementById("hello-container");
-    helloContainer.innerText = name;
-<<<<<<< HEAD
-}*/
-
 // To parse JSON into a usable object for javascript
 function getComments() {
 
     // fetch data from server, parse as json file, then reference coms as an object
-    fetch('/data').then(response => response.json()).then((coms) => {
+    fetch('/data').then(response => response.json()).then((comments) => {
         const commentList = document.getElementById("comment-container");
         commentList.innerText = '';
         commentList.appendChild(
-            createListElement("Page One: " + coms[0]));
+            createListElement("Page One: " + comments[0]));
         commentList.appendChild(
-            createListElement("Page Two: " + coms[1]));
+            createListElement("Page Two: " + comments[1]));
         commentList.appendChild(
-            createListElement("Page Three: " + coms[2]));
+            createListElement("Page Three: " + comments[2]));
     });
 }
 
@@ -131,19 +93,21 @@ function getCommentsLong() {
 
 function handleResponse(response) {
     console.log('convert JSON promise stream to text');
-    const textPromise = response.text();
+    const textPromise = response.json();
     console.log(textPromise);
     textPromise.then(addListToDom);
 }
 
 function addListToDom(list) {
-    console.log('parsing json text and printing' + list);
     const commentList = document.getElementById("comment-container");
     commentList.innerText = '';
     // list.pageOne does not work as a JSON element should, should this work with array format?
     commentList.appendChild(
-        createListElement("Page One: " + list.pageOne));
-
+      createListElement("Page One: " + list[0]));
+    commentList.appendChild(
+      createListElement("Page Two: " + list[1]));
+    commentList.appendChild(
+      createListElement("Page Three: " + list[2]));
 }
 
 /** Creates an <li> element containing text. */
@@ -153,3 +117,16 @@ function createListElement(text) {
   return liElement;
 }
 
+async function getCommentsAsyncAwait() {
+    const response = await fetch('/data');
+    const comments = await response.json();
+    const commentList = document.getElementById("comment-container");
+    commentList.innerText = '';
+    commentList.appendChild(
+      createListElement("Page One: " + comments[0]));
+    commentList.appendChild(
+      createListElement("Page Two: " + comments[1]));
+    commentList.appendChild(
+      createListElement("Page Three: " + comments[2]));
+
+}

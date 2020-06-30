@@ -26,36 +26,19 @@ import java.util.ArrayList;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String pageOne = "Homepage with pictures. U/C";
-    String pageTwo = "List of projects in a resume way. U/C";
-    String pageThree = "Hidden Talents. U/C";
-
-
-    List<String> arr = new ArrayList<String>();
-    arr.add(pageOne);
-    arr.add(pageTwo);
-    arr.add(pageThree);
+    
+    
+    ArrayList<String> arr = new ArrayList<String>();
+    arr.add("Homepage with pictures. U/C");
+    arr.add("List of projects in a resume way. U/C");
+    arr.add("Hidden Talents. U/C");
 
     String json = convertJsonUsingGson(arr);
     response.setContentType("application/json;");
     response.getWriter().println(json);
-  }
-
-//  Manual array to Json conversion
- private String convertToJson(ArrayList<String> comments) {
-    String json = "{";
-    json += "\"pageOne\": ";
-    json += "\"" + comments.get(0) + "\"";
-    json += ", ";
-    json += "\"pageTwo\": ";
-    json += "\"" + comments.get(1) + "\"";
-    json += ", ";
-    json += "\"pageThree\": ";
-    json += comments.get(2);
-    json += "}";
-    return json;
   }
 
   private String convertJsonUsingGson(ArrayList<String> comments) {
