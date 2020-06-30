@@ -29,8 +29,7 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    
-    
+          
     ArrayList<String> arr = new ArrayList<String>();
     arr.add("Homepage with pictures. U/C");
     arr.add("List of projects in a resume way. U/C");
