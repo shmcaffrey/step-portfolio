@@ -92,5 +92,5 @@ function createListElement(comment) {
 
 // Once data from datastore is deleted then remove text from page
 function deleteAllComments() {
-    fetch("/delete-data", {method: 'POST'}).then(document.getElementById("comment-contianer").innerText = "");
+    fetch("/delete-data", {method: 'POST'}).then(document.getElementById("comment-container").innerText = "");
 }
