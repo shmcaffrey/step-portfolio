@@ -85,3 +85,4 @@ function createListElement(comment) {
   liElement.innerText = comment;
   return liElement;
 }
+
