@@ -12,20 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/**
- * Adds a random greeting to the page.
- */
-function addRandomGreeting() {
-  const greetings =
-      ['Hello world!', '¡Hola Mundo!', '你好，世界！', 'Bonjour le monde!', 'Hallo, Wereld'];
-
-  // Pick a random greeting.
-  const greeting = greetings[Math.floor(Math.random() * greetings.length)];
-
-  // Add it to the page.
-  const greetingContainer = document.getElementById('greeting-container');
-  greetingContainer.innerText = greeting;
-}
 
 let myImg = document.getElementById("yoga-poses");
 let yogaReveal = document.getElementById("yoga-link");
@@ -65,7 +51,7 @@ var sanArr = ["Adho Mukha Svansana", "Padmasana", "Virabhadrasana II", "Kapotasa
 var engArr = ["Downward Facing Dog", "Lotus Pose", "Warrior Two", "Pigeon Pose", "Warrior three",
   "Upward-facing Intense Stretch Pose", "Tree Pose", "Plow Pose", "Upward Facing Dog"];
 
-yogaReveal.onclick = function() {
+yogaReveal.onclick = () => {
   numClick++;
   let index = numClick % 8;
   myImg.src = imgArray[index].src;
@@ -80,25 +66,16 @@ yogaReveal.onclick = function() {
 }
 
 
-function getName() {
-    console.log('Fetching Name');
+// To parse JSON into a usable object for javascript
+function getComments() {
 
-    // request html from servlet data
-    const responsePromise = fetch('/data');
-
-    responsePromise.then(handleResponse);
+    // fetch data from server, parse as json file, then reference coms as an object
+    fetch('/data').then(response => response.json()).then((comments) => {
+        const commentList = document.getElementById("comment-container");
+        console.log("fetching comments");
+        comments.forEach((comment) => {
+            commentList.appendChild(createListElement(comment));
+        })
+    });
 }
 
-function handleResponse(response) {
-    console.log('Handle name response');
-
-    // converts response into text
-    const textPromise = response.text();
-
-    textPromise.then(addName);
-}
-
-function addName(name) {
-    const helloContainer = document.getElementById("hello-container");
-    helloContainer.innerText = name;
-}
