@@ -12,10 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
-let myImg = document.getElementById("yoga-poses");
-let yogaReveal = document.getElementById("yoga-link");
-let numClick = -1;
 var imgArray = new Array();
 
 imgArray[0] = new Image();
@@ -51,7 +47,10 @@ var sanArr = ["Adho Mukha Svansana", "Padmasana", "Virabhadrasana II", "Kapotasa
 var engArr = ["Downward Facing Dog", "Lotus Pose", "Warrior Two", "Pigeon Pose", "Warrior three",
   "Upward-facing Intense Stretch Pose", "Tree Pose", "Plow Pose", "Upward Facing Dog"];
 
-yogaReveal.onclick = () => {
+let myImg = document.getElementById("yoga-poses");
+let numClick = -1;
+
+function revealPose () {
   numClick++;
   let index = numClick % 8;
   myImg.src = imgArray[index].src;
@@ -62,8 +61,8 @@ yogaReveal.onclick = () => {
     document.getElementById("san-text").innerText = sanArr[index];
     document.getElementById("eng-text").innerText = engArr[index];
   }
-
 }
+  
 
 
 // To parse JSON into a usable object for javascript
@@ -74,8 +73,16 @@ function getComments() {
         const commentList = document.getElementById("comment-container");
         console.log("fetching comments");
         comments.forEach((comment) => {
+            console.log(comment);
             commentList.appendChild(createListElement(comment));
         })
     });
+}
+
+/** Creates an <li> element containing text. */
+function createListElement(comment) {
+  const liElement = document.createElement('li');
+  liElement.innerText = comment;
+  return liElement;
 }
 
