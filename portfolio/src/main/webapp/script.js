@@ -12,10 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
-let myImg = document.getElementById("yoga-poses");
-let yogaReveal = document.getElementById("yoga-link");
-let numClick = -1;
 var imgArray = new Array();
 
 imgArray[0] = new Image();
@@ -51,7 +47,10 @@ var sanArr = ["Adho Mukha Svansana", "Padmasana", "Virabhadrasana II", "Kapotasa
 var engArr = ["Downward Facing Dog", "Lotus Pose", "Warrior Two", "Pigeon Pose", "Warrior three",
   "Upward-facing Intense Stretch Pose", "Tree Pose", "Plow Pose", "Upward Facing Dog"];
 
-yogaReveal.onclick = () => {
+let myImg = document.getElementById("yoga-poses");
+let numClick = -1;
+
+function revealPose () {
   numClick++;
   let index = numClick % 8;
   myImg.src = imgArray[index].src;
@@ -62,8 +61,8 @@ yogaReveal.onclick = () => {
     document.getElementById("san-text").innerText = sanArr[index];
     document.getElementById("eng-text").innerText = engArr[index];
   }
-
 }
+  
 
 
 // To parse JSON into a usable object for javascript
@@ -73,57 +72,16 @@ function getComments() {
     fetch('/data').then(response => response.json()).then((comments) => {
         const commentList = document.getElementById("comment-container");
         console.log("fetching comments");
-        comments.forEach((comments) => {
-            commentList.appendChild(createListElement(comments));
+        comments.forEach((comment) => {
+            console.log(comment);
+            commentList.appendChild(createListElement(comment));
         })
     });
 }
 
-// For learning promises
-function getCommentsLong() {
-    console.log('fetching JSON');
-
-    const responsePromise = fetch('/data');
-
-    responsePromise.then(handleResponse);
-}
-
-function handleResponse(response) {
-    console.log('convert JSON promise stream to text');
-    const textPromise = response.json();
-    console.log(textPromise);
-    textPromise.then(addListToDom);
-}
-
-function addListToDom(list) {
-    const commentList = document.getElementById("comment-container");
-    commentList.innerText = '';
-    // list.pageOne does not work as a JSON element should, should this work with array format?
-    commentList.appendChild(
-      createListElement("Page One: " + list[0]));
-    commentList.appendChild(
-      createListElement("Page Two: " + list[1]));
-    commentList.appendChild(
-      createListElement("Page Three: " + list[2]));
-}
-
 /** Creates an <li> element containing text. */
-function createListElement(text) {
+function createListElement(comment) {
   const liElement = document.createElement('li');
-  liElement.innerText = text;
+  liElement.innerText = comment;
   return liElement;
-}
-
-async function getCommentsAsyncAwait() {
-    const response = await fetch('/data');
-    const comments = await response.json();
-    const commentList = document.getElementById("comment-container");
-    commentList.innerText = '';
-    commentList.appendChild(
-      createListElement("Page One: " + comments[0]));
-    commentList.appendChild(
-      createListElement("Page Two: " + comments[1]));
-    commentList.appendChild(
-      createListElement("Page Three: " + comments[2]));
-
 }
