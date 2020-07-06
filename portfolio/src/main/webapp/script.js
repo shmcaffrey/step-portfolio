@@ -72,7 +72,6 @@ function getComments(numComments) {
     // fetch data from server, parse as json file, then reference coms as an object
     fetch("/data?num-comments=" + numComments).then(response => response.json()).then((comments) => {
         const commentList = document.getElementById("comment-container");
-        console.log("deleting old comments");
         commentList.innerText = "";
         console.log("fetching comments");
         comments.forEach((comment) => {

@@ -82,9 +82,9 @@ public class DataServlet extends HttpServlet {
     response.sendRedirect("/index.html");
   }
 
-    private String convertJsonUsingGson(ArrayList<String> comments) {
-      String json = new Gson().toJson(comments);
-      return json;
+  private String convertJsonUsingGson(ArrayList<String> comments) {
+    String json = new Gson().toJson(comments);
+    return json;
   }
 
   private int getCommentInput(HttpServletRequest request) {
