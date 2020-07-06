@@ -87,10 +87,10 @@ img {
 
 #delete-button {
     background-color: rgb(255, 132, 110);
-    border:none
+    border:none;
 }
 
 #submit-button {
-  background-color:green
-  border:none
+  background-color:green;
+  border:none;
 }
