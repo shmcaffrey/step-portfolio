@@ -72,19 +72,19 @@
             <img src="images/mtn1.jpg" style="max-width: 100%" title="Fabriano: The beautiful countryside">
         </div>
         <div style="text-align: center" class="grid-text">
+          <h1>Leave a Comment:</h1>
+          <h3>Number shown</h3>
           <form action="/data" style="color:black">
-            <label for="num-comments">Number of comments shown</label>
-            <input type="number" id="num-comments" name="num-comments" min="0" value="5" onchange="getComments(this.value)">
+            <input type="number" style="width:50px" id="num-comments" name="num-comments" min="0" value="5" onchange="getComments(this.value)">
            </form>
            <br/>
            <form action="/data" method="POST" style="color:black">
             <textarea name="text-input" placeholder="Enter comment here..."></textarea>
-            <br/>
-            <input type="submit"/>
+            <input id="submit-button" type="submit"/>
           </form>
           <ul id="comment-container"></ul>
           <form action="/data" method="POST" style="color:black">
-            <button onclick="deleteAllComments()">Delete All Comments</button>
+            <button id="delete-button" onclick="deleteAllComments()">Delete All Comments</button>
           </form>
         </div>
         <div class="grid-item">
