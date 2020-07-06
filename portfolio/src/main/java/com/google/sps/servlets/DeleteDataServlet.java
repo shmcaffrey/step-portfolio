@@ -4,7 +4,10 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.KeyRange;
+import com.google.appengine.api.datastore.EmbeddedEntity;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
@@ -23,10 +26,14 @@ public class DeleteDataServlet extends HttpServlet {
     
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        long id = Long.parseLong(request.getParameter("comment-container"));
+      Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
+      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+      PreparedQuery results = datastore.prepare(query);
 
-        Key tastEntityKey = KeyFactory.createKey("Comment", id);
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        datastore.delete(tastEntityKey);
+      for (Entity entity : results.asIterable()) { 
+        //long id = Long.parseLong();
+        Key commentEntityKey = entity.getKey();
+        datastore.delete(commentEntityKey);
+      }
     }
 }

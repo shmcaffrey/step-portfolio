@@ -63,15 +63,14 @@ function revealPose () {
   }
 }
   
-
-
 // To parse JSON into a usable object for javascript
-function getComments(query) {
-    if (query == null) {
-        query == "5";
+function getComments(numComments) {
+    if (numComments == null) {
+        numComments == "5";
     }
+
     // fetch data from server, parse as json file, then reference coms as an object
-    fetch("/data?num-comments=" + query).then(response => response.json()).then((comments) => {
+    fetch("/data?num-comments=" + numComments).then(response => response.json()).then((comments) => {
         const commentList = document.getElementById("comment-container");
         commentList.innerText = "";
         console.log("fetching comments");
@@ -89,7 +88,12 @@ function createListElement(comment) {
   return liElement;
 }
 
-// Once data from datastore is deleted then remove text from page
+//Once data from datastore is deleted then remove text from page
 function deleteAllComments() {
-    fetch("/delete-data", {method: 'POST'}).then(document.getElementById("comment-container").innerText = "");
+    const request = new Request('/delete-data', {method: 'POST'});
+    fetch(request).then(response => response.text()).then(getComments());
+}
+
+function fillNumComments() {
+    return document.getElementById("num-comments").value;
 }
