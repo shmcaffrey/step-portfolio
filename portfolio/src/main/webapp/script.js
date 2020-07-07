@@ -63,14 +63,16 @@ function revealPose () {
   }
 }
   
-
-
 // To parse JSON into a usable object for javascript
-function getComments() {
+function getComments(numComments) {
+    if (numComments == null) {
+        numComments == "5";
+    }
 
     // fetch data from server, parse as json file, then reference coms as an object
-    fetch('/data').then(response => response.json()).then((comments) => {
+    fetch("/data?num-comments=" + numComments).then(response => response.json()).then((comments) => {
         const commentList = document.getElementById("comment-container");
+        commentList.innerText = "";
         console.log("fetching comments");
         comments.forEach((comment) => {
             console.log(comment);
@@ -86,3 +88,12 @@ function createListElement(comment) {
   return liElement;
 }
 
+//Once data from datastore is deleted then remove text from page
+function deleteAllComments() {
+    const request = new Request('/delete-data', {method: 'POST'});
+    fetch(request).then(response => response.text()).then(getComments());
+}
+
+function fillNumComments() {
+    return document.getElementById("num-comments").value;
+}

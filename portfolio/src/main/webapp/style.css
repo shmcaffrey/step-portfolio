@@ -84,3 +84,13 @@ img {
     opacity: 0.7;
     cursor: pointer;
 }
+
+#delete-button {
+    background-color: rgb(255, 132, 110);
+    border:none;
+}
+
+#submit-button {
+  background-color:green;
+  border:none;
+}
