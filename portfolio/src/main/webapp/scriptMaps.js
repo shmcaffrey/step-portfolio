@@ -1,5 +1,15 @@
+class Place {
+    constructor(markerIn, contentIn) {
+        this.marker = markerIn;
+        this.content = contentIn;
+    }
+}
+
+var chelseaContent;
+var hagueContent;
 var cMarker;
 var hMarker;
+
 function initMap() {
 
     var darkMode = new google.maps.StyledMapType(
@@ -87,6 +97,27 @@ function initMap() {
     var chelseaLatLng = { lat: 42.318, lng: -84.020 };
     var hagueLatLng = { lat: 52.0705, lng: 4.3007 };
 
+    var chelseaString = "<h1>Chelsea, MI</h1>" + 
+        "<div><p>Chelsea is a city in Washtenaw County in the U.S." +
+        " state of Michigan. The population was 4,944 at the 2010 census.</p></div>" +
+        "<p>Attribution: Chelsea, " +
+        '<a href="https://en.wikipedia.org/wiki/Chelsea,_Michigan">' +
+        "https://en.wikipedia.org/wiki/Chelsea,_Michigan</a> (last visited July 07, 2020).</p>" +
+        "</div></div>";
+
+    var hagueString = "<h1>The Hague, NL</h1>" + 
+        "<div><p>The Hague is a city on the North Sea coast" +
+        " of the western Netherlands. Its Gothic-style Binnenhof" +
+        " (or Inner Court) complex is the seat of the Dutch parliament," +
+        " and 16th-century Noordeinde Palace is the king’s workplace." +
+        " The city is also home to the U.N.’s International Court of" +
+        " Justice, headquartered in the Peace Palace, and the International"
+        " Criminal Court.</p></div>" +
+        "<p>Attribution: The Hague, " +
+        '<a href="https://www.google.com/search?q=the+hague&rlz=1CAERIM_enUS906US906&oq=the+&aqs=chrome.0.69i59l3j69i57j46j69i61l2j69i65.1020j0j7&sourceid=chrome&ie=UTF-8">' +
+        "https://www.google.com</a> (last visited July 07, 2020).</p>" +
+        "</div></div>";
+
     var map = new google.maps.Map(
         document.getElementById("map"), {
         center: chelseaLatLng,
@@ -112,20 +143,35 @@ function initMap() {
         animation: google.maps.Animation.DROP,
     });
 
-    cMarker.addListener("click", bounce);
-    hMarker.addListener("click", bounce);
+    chelseaContent = new google.maps.InfoWindow({
+        content: chelseaString,
+        pixelOffset:  new google.maps.Size(0, -20)
+    });
 
+    hagueContent = new google.maps.InfoWindow({
+        content: hagueString,
+        pixelOffset:  new google.maps.Size(0, -20)
+    });
+
+    cMarker.addListener("click", function() {
+        bounce(cMarker, chelseaContent);
+    });
+    hMarker.addListener("click", function() {
+        bounce(hMarker, hagueContent);
+    });
     map.mapTypes.set("dark_mode", darkMode);
     map.mapTypeId("dark_mode");
     map.setTilt(45);
 }
 
-
-
-function bounce() {
-    if (this.getAnimation() !== null) {
-        this.setAnimation(null);
+function bounce(marker, infoWindow) {
+    if (marker.getAnimation() !== null) {
+        marker.setAnimation(null);
+        infoWindow.close(map, marker);
     } else {
-        this.setAnimation(google.maps.Animation.BOUNCE);
+        marker.setAnimation(google.maps.Animation.BOUNCE);
+        infoWindow.open(map, marker);
     }
 }
+
+// TODO: Add ability to have user add their own marker and content
