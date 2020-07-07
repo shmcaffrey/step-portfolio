@@ -1,3 +1,5 @@
+var cMarker;
+var hMarker;
 function initMap() {
 
     var darkMode = new google.maps.StyledMapType(
@@ -81,21 +83,49 @@ function initMap() {
                 stylers: [{ color: '#17263c' }]
             }
         ], { name: "Dark Mode" });
-        
+
+    var chelseaLatLng = { lat: 42.318, lng: -84.020 };
+    var hagueLatLng = { lat: 52.0705, lng: 4.3007 };
 
     var map = new google.maps.Map(
         document.getElementById("map"), {
-        center: { lat: 42.318, lng: -84.020 },
+        center: chelseaLatLng,
         zoom: 8,
         gestureHandling: "cooperative",
-        mapTypeId: "hybrid",
         mapTypeControlOptions: {
-          mapTypeIds: ['roadmap', 'satellite', 'hybrid', 'terrain',
-                    'dark_mode']
+            mapTypeIds: ['roadmap', 'satellite', 'hybrid', 'terrain',
+                'dark_mode']
         }
     });
+
+    cMarker = new google.maps.Marker({
+        position: chelseaLatLng,
+        map: map,
+        title: "Hometown",
+        animation: google.maps.Animation.DROP,
+    });
+
+    hMarker = new google.maps.Marker({
+        position: hagueLatLng,
+        map: map,
+        title: "Au Pair Town",
+        animation: google.maps.Animation.DROP,
+    });
+
+    cMarker.addListener("click", bounce);
+    hMarker.addListener("click", bounce);
 
     map.mapTypes.set("dark_mode", darkMode);
     map.mapTypeId("dark_mode");
     map.setTilt(45);
+}
+
+
+
+function bounce() {
+    if (this.getAnimation() !== null) {
+        this.setAnimation(null);
+    } else {
+        this.setAnimation(google.maps.Animation.BOUNCE);
+    }
 }
