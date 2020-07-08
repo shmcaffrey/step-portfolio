@@ -79,6 +79,17 @@ function getComments(numComments) {
             commentList.appendChild(createListElement(comment));
         })
     });
+
+    fetch("/blob-upload").then((response) => 
+      {return response.text();
+      })
+      .then ((imageUploadUrl) => {
+        const messageForm = document.getElementById("image-form");
+        messageForm.action = imageUploadUrl;
+        messageForm.classList.remove("hidden");
+      })
+    
+    
 }
 
 /** Creates an <li> element containing text. */

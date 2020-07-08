@@ -34,68 +34,94 @@
         </p>
       </div>
     </div>
+
+<!-- TODO https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_image_grid_responsive responsive grid for style  -->
+
     <div class="break-container"></div>
     <div class="grid-container">
-        <div class="grid-text">
-          I am a University of Michigan student set to graduate in May 2022 with a BS in
-          Computer Science. I’ve lived in Michigan most of my life except for ten months
-          that I spent nannying in the Netherlands fresh out of high school.
-        </div>
-        <div class="grid-item">
-            <img src="images/mo.jpg" style="max-width: 100%"
-                 title="The Netherlands: one of the kids I nannied for hanging out at a skate park.">
-        </div>
-        <div class="grid-item">
-            <img src="images/person.jpg" style="max-width: 100%"
-                 title="Cinque Terre: On the cliffs to nowhere">
-        </div>
-        <div class="grid-item">
-            <img src="images/pool.jpg" style="max-width: 100%" title="Fabriano, Italy: the infinity pool">
-        </div>
-        <div class="grid-item">
-            <img src="images/Shaunna4.jpg" style="max-width: 100%" title="Oils: a portfolio piece I made in 2017">
-        </div>
-        <div class="grid-text">
-          I'm most passionate about the connection between technology and the environment
-          and using technology to reduce carbon emissions and the amount of greenhouse
-          gases in the atmosphere. I also love art.
-        </div>
-        <div class="grid-item">
-            <img src="images/scones.jpg" style="max-width: 100%" title="Scones:  Raspberry and lemon!">
-        </div>
-        <div class="grid-text">
-          At university, I am part of Girls in electrical engineering and computer science
-          GEECS), and I am on a project team to create a 21st century Hammond Organ. I also
-          participate in intramural sports when there is not a global pandemic.
-        </div>
-        <div class="grid-item">
-            <img src="images/mtn1.jpg" style="max-width: 100%" title="Fabriano: The beautiful countryside">
-        </div>
-        <div style="text-align: center" class="grid-text">
-          <h1>Leave a Comment:</h1>
-          <h3>Number shown</h3>
-          <form action="/data" style="color:black">
-            <input type="number" style="width:50px" id="num-comments" name="num-comments" min="0" value="5" onchange="getComments(this.value)">
-           </form>
-           <br/>
-           <form action="/data" method="POST" style="color:black">
-            <textarea name="text-input" placeholder="Enter comment here..."></textarea>
-            <input id="submit-button" type="submit"/>
-          </form>
-          <ul id="comment-container"></ul>
-          <form action="/data" method="POST" style="color:black">
-            <button id="delete-button" onclick="deleteAllComments()">Delete All Comments</button>
-          </form>
-        </div>
-        <div class="grid-item">
-            <img src="images/gum.jpg" style="max-width: 100%;" alt="Photo of girl blowing bubblegum"
-                 title="Stockholm, Sweden: cousin blowing bubble gum while looking for otters">
-        </div>
-        <div style="text-align: center" class="grid-text">
-            <p><a href="projects.html">Projects</a></P>
-            <p><a href="hidTalents.html">Hidden Talents</a></p>
-            <p><a href="maps.html">Maps</a></p>
-        </div>
+      <div class="grid-text">
+        I am a University of Michigan student set to graduate in May 2022 with a BS in
+        Computer Science. I’ve lived in Michigan most of my life except for ten months
+        that I spent nannying in the Netherlands fresh out of high school.
+      </div>
+      
+      <div class="grid-item">
+          <img src="images/mo.jpg" style="max-width: 100%"
+                title="The Netherlands: one of the kids I nannied for hanging out at a skate park.">
+      </div>
+      <div class="grid-item">
+          <img src="images/person.jpg" style="max-width: 100%"
+                title="Cinque Terre: On the cliffs to nowhere">
+      </div>
+      <div class="grid-item">
+          <img src="images/pool.jpg" style="max-width: 100%" title="Fabriano, Italy: the infinity pool">
+      </div>
+      <div class="grid-item">
+          <img src="images/Shaunna4.jpg" style="max-width: 100%" title="Oils: a portfolio piece I made in 2017">
+      </div>
+
+      <div class="grid-text">
+        I'm most passionate about the connection between technology and the environment
+        and using technology to reduce carbon emissions and the amount of greenhouse
+        gases in the atmosphere. I also love art.
+      </div>
+
+      <div class="grid-item">
+          <img src="images/scones.jpg" style="max-width: 100%" title="Scones:  Raspberry and lemon!">
+      </div>
+
+      <div class="grid-text">
+        At university, I am part of Girls in electrical engineering and computer science
+        GEECS), and I am on a project team to create a 21st century Hammond Organ. I also
+        participate in intramural sports when there is not a global pandemic.
+      </div>
+
+      <div class="grid-item">
+          <img src="images/mtn1.jpg" style="max-width: 100%" title="Fabriano: The beautiful countryside">
+      </div>
+
+      <div style="text-align: center" class="grid-text">
+        <h1>Leave a Comment:</h1>
+        <h3>Number shown</h3>
+
+        <form action="/data" style="color:black">
+          <input type="number" style="width:50px" id="num-comments" name="num-comments" min="0" value="5" onchange="getComments(this.value)">
+        </form>
+        <br/>
+
+        <form action="/data" method="POST" style="color:black">
+          <textarea name="text-input" placeholder="Enter comment here..."></textarea>
+          <input id="submit-button" type="submit"/>
+          <br/>
+        </form>
+
+        <ul id="comment-container"></ul>
+
+        <form id="image-form" class="hidden" method="POST" enctype="multipart/form-data">
+          <br/>
+          <input type="file" name="image">
+          <input type="submit" value="Upload Image">
+          </br>
+        </form>
+
+        <form action="/data" method="POST" style="color:black">
+          <button id="delete-button" onclick="deleteAllComments()">Delete All Comments</button>
+        </form>
+
+      </div>
+
+      <div class="grid-item">
+          <img src="images/gum.jpg" style="max-width: 100%;" alt="Photo of girl blowing bubblegum"
+                title="Stockholm, Sweden: cousin blowing bubble gum while looking for otters">
+      </div>
+
+      <div style="text-align: center" class="grid-text">
+          <p><a href="projects.html">Projects</a></P>
+          <p><a href="hidTalents.html">Hidden Talents</a></p>
+          <p><a href="maps.html">Maps</a></p>
+      </div>
+      <div hidden class="slideshow-container">
+      </div>
     </div>
   </body>
 </html>
