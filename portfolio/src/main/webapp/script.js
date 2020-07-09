@@ -12,75 +12,67 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-var imgArray = new Array();
 
-imgArray[0] = new Image();
-imgArray[0].src = "images/Yogi/yogi.png";
+var slideIndex = 1;
+showSlides(slideIndex);
 
-imgArray[1] = new Image();
-imgArray[1].src = "images/Yogi/yogi1.png";
+function plusSlides(n) {
+  showSlides(slideIndex += n);
+}
 
-imgArray[2] = new Image();
-imgArray[2].src = "images/Yogi/yogi2.png";
+function showSlides(n) {
+  var i;
+  var slides = document.getElementsByClassName('mySlides');
 
-imgArray[3] = new Image();
-imgArray[3].src = "images/Yogi/yogi3.png";
-
-imgArray[4] = new Image();
-imgArray[4].src = "images/Yogi/yogi4.png";
-
-imgArray[5] = new Image();
-imgArray[5].src = "images/Yogi/yogi5.png";
-
-imgArray[6] = new Image();
-imgArray[6].src = "images/Yogi/yogi6.png";
-
-imgArray[7] = new Image();
-imgArray[7].src = "images/Yogi/yogi7.png";
-
-imgArray[8] = new Image();
-imgArray[8].src = "images/Yogi/yogi8.png";
-
-var sanArr = ["Adho Mukha Svansana", "Padmasana", "Virabhadrasana II", "Kapotasana", "Virabhadrasana III",
-              "Urdhva Mukha Paschimottanasana", "Vriksasana", "Halasana", "Urdhva Mukha Shvanasana"];
-
-var engArr = ["Downward Facing Dog", "Lotus Pose", "Warrior Two", "Pigeon Pose", "Warrior three",
-  "Upward-facing Intense Stretch Pose", "Tree Pose", "Plow Pose", "Upward Facing Dog"];
-
-let myImg = document.getElementById("yoga-poses");
-let numClick = -1;
-
-function revealPose () {
-  numClick++;
-  let index = numClick % 8;
-  myImg.src = imgArray[index].src;
-  if (numClick === 0) {
-    document.getElementById("san-text").innerText = "You found it! Keep clicking for more.";
-  }
-  else {
-    document.getElementById("san-text").innerText = sanArr[index];
-    document.getElementById("eng-text").innerText = engArr[index];
+  if (n > slides.length) {slideIndex = 1}    
+  if (n < 1) {slideIndex = slides.length}
+  for (i = 0; i < slides.length; i++) {
+    if (i == slideIndex - 1) {
+      slides[slideIndex-1].style.display = 'block';
+    }
+    else {
+      slides[i].style.display = 'none';  
+    }
   }
 }
   
 // To parse JSON into a usable object for javascript
 function getComments(numComments) {
-    if (numComments == null) {
-        numComments == "5";
-    }
+  
+  if (numComments == null) {
+    numComments == '5';
+  }
 
-    // fetch data from server, parse as json file, then reference coms as an object
-    fetch("/data?num-comments=" + numComments).then(response => response.json()).then((comments) => {
-        const commentList = document.getElementById("comment-container");
-        commentList.innerText = "";
-        console.log("fetching comments");
-        comments.forEach((comment) => {
-            console.log(comment);
-            commentList.appendChild(createListElement(comment));
-        })
+  // fetch data from server, parse as json file, then reference coms as an object
+  fetch('/data?num-comments=' + numComments).then(response => response.json()).then((comments) => {
+    const commentList = document.getElementById('comment-container');
+    commentList.innerText = '';
+    console.log('fetching comments');
+    comments.forEach((comment) => {
+      console.log(comment);
+      commentList.appendChild(createListElement(comment));
+    })
+  });
+
+  fetch('/blob-upload').then((response) => {
+      return response.text();
+    }).then((imageUploadUrl) => {
+      const messageForm = document.getElementById('image-form');
+      messageForm.action = imageUploadUrl;
+      messageForm.classList.remove('hidden');
     });
-}
 
+  fetch('/store').then((response) => response.json()).then((imageUploadUrls) => {
+    const imgSlides = document.getElementById('slideshow');
+    imageUploadUrls.forEach((imgUrl) => {
+      imgSlides.prepend(createSlideElement(imgUrl));
+    })
+    showSlides(1);
+    imgSlides.classList.remove('hidden');
+
+  });
+}
+  
 /** Creates an <li> element containing text. */
 function createListElement(comment) {
   const liElement = document.createElement('li');
@@ -95,5 +87,20 @@ function deleteAllComments() {
 }
 
 function fillNumComments() {
-    return document.getElementById("num-comments").value;
+    return document.getElementById('num-comments').value;
 }
+
+function createSlideElement(imgUrlIn) {
+    var slide = document.createElement('div');
+    slide.setAttribute('class', 'mySlides');
+    
+    var image = document.createElement('img');
+    image.setAttribute('src', imgUrlIn);
+    image.setAttribute('class', 'slideshow-img');
+
+    //TODO: add count of pictures
+
+    slide.appendChild(image);
+    return slide;
+}
+
