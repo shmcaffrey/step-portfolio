@@ -104,8 +104,16 @@ img {vertical-align: middle;}
 /* Slideshow container */
 .slideshow-container {
   max-width: 1000px;
+  max-height: 700px;
   position: relative;
   margin: auto;
+}
+
+img.slideshow-img {
+    height: 50vw;
+    margin-left: auto;
+    margin-right: auto;
+    
 }
 
 /* Next & previous buttons */
@@ -169,24 +177,6 @@ img {vertical-align: middle;}
 
 .active, .dot:hover {
   background-color: #717171;
-}
-
-/* Fading animation */
-.fade {
-  -webkit-animation-name: fade;
-  -webkit-animation-duration: 1.5s;
-  animation-name: fade;
-  animation-duration: 1.5s;
-}
-
-@-webkit-keyframes fade {
-  from {opacity: .4} 
-  to {opacity: 1}
-}
-
-@keyframes fade {
-  from {opacity: .4} 
-  to {opacity: 1}
 }
 
 /* On smaller screens, decrease text size */

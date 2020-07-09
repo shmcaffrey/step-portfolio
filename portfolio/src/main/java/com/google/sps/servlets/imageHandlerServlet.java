@@ -13,6 +13,7 @@ import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -21,7 +22,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-
 
 /*When user submits image, this servlet processes the request Url sent by the upload servlet*/
 
@@ -33,6 +33,7 @@ public class imageHandlerServlet extends HttpServlet {
 
   // gets Url to store image in database
   String imageUrl = getUploadedFileUrl(request, "image");
+
   long timestamp = System.currentTimeMillis();
   Entity imageEntity = new Entity("Image");
   imageEntity.setProperty("imageUrl", imageUrl);
