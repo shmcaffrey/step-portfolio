@@ -97,6 +97,7 @@ function initMap() {
     let chelseaLatLng = { lat: 42.318, lng: -84.020 };
     let hagueLatLng = { lat: 52.0705, lng: 4.3007 };
 
+
     let chelseaString = '<h1>Chelsea, MI</h1>' + 
         '<p>Chelsea is a city in Washtenaw County in the U.S.' +
         ' state of Michigan. The population was 4,944 at the 2010 census.</p>' +
@@ -157,8 +158,15 @@ function initMap() {
     hMarker.addListener('click', function() {
         bounce(hMarker, hagueContent);
     });
+
+    chelseaContent.addListener('closeclick', function() {
+        bounce(cMarker, chelseaContent);
+    });
+    hagueContent.addListener('closeclick', function() {
+        bounce(hMarker, hagueContent);
+    });
+
     map.mapTypes.set('dark_mode', darkMode);
-    map.mapTypeId('dark_mode');
     map.setTilt(45);
 }
 
