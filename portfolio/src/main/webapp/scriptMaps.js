@@ -109,10 +109,7 @@ function initMap() {
         '<p>The Hague is a city on the North Sea coast' +
         ' of the western Netherlands. Its Gothic-style Binnenhof' +
         ' (or Inner Court) complex is the seat of the Dutch parliament,' +
-        ' and 16th-century Noordeinde Palace is the king’s workplace.' +
-        ' The city is also home to the U.N.’s International Court of' +
-        ' Justice, headquartered in the Peace Palace, and the International'
-        ' Criminal Court.</p>' +
+        ' and 16th-century Noordeinde Palace is the king’s workplace.</p>' +
         '<p>Attribution: The Hague, ' +
         '<a href="https://www.google.com/search?q=the+hague&rlz=1CAERIM_enUS906US906&oq=the+&aqs=chrome.0.69i59l3j69i57j46j69i61l2j69i65.1020j0j7&sourceid=chrome&ie=UTF-8">' +
         'https://www.google.com</a> (last visited July 07, 2020).</p>';
