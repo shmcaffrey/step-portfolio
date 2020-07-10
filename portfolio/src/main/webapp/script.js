@@ -48,10 +48,15 @@ function getComments(numComments) {
     const commentList = document.getElementById('comment-container');
     commentList.innerText = '';
     console.log('fetching comments');
-    comments.forEach((comment) => {
-      console.log(comment);
-      commentList.appendChild(createListElement(comment));
-    })
+      comments.forEach((comment) => {
+        if (comment == null) {
+          console.log('no comment')
+        }
+        else {
+          console.log(comment);
+          commentList.appendChild(createListElement(comment));
+        }
+      })
   });
 
   fetch('/blob-upload').then((response) => {
@@ -82,8 +87,9 @@ function createListElement(comment) {
 
 //Once data from datastore is deleted then remove text from page
 function deleteAllComments() {
+    const commentList = getElementById('comment-container');
     const request = new Request('/delete-data', {method: 'POST'});
-    fetch(request).then(response => response.text()).then(getComments());
+    fetch(request).then(response => response.text()).then(getComments(0));
 }
 
 function fillNumComments() {
