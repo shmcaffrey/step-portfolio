@@ -46,18 +46,18 @@
       </div>
       
       <div class="grid-item">
-          <img src="images/mo.jpg" style="max-width: 100%"
+          <img class="grid-img" src="images/mo.jpg"
                 title="The Netherlands: one of the kids I nannied for hanging out at a skate park.">
       </div>
       <div class="grid-item">
-          <img src="images/person.jpg" style="max-width: 100%"
+          <img class="grid-img" src="images/person.jpg"
                 title="Cinque Terre: On the cliffs to nowhere">
       </div>
       <div class="grid-item">
-          <img src="images/pool.jpg" style="max-width: 100%" title="Fabriano, Italy: the infinity pool">
+          <img class="grid-img" src="images/pool.jpg" style="max-width: 100%" title="Fabriano, Italy: the infinity pool">
       </div>
       <div class="grid-item">
-          <img src="images/Shaunna4.jpg" style="max-width: 100%" title="Oils: a portfolio piece I made in 2017">
+          <img class="grid-img" src="images/Shaunna4.jpg" title="Oils: a portfolio piece I made in 2017">
       </div>
 
       <div class="grid-text">
@@ -67,7 +67,7 @@
       </div>
 
       <div class="grid-item">
-          <img src="images/scones.jpg" style="max-width: 100%" title="Scones:  Raspberry and lemon!">
+          <img class="grid-img" src="images/scones.jpg" title="Scones:  Raspberry and lemon!">
       </div>
 
       <div class="grid-text">
@@ -77,31 +77,36 @@
       </div>
 
       <div class="grid-item">
-          <img src="images/mtn1.jpg" style="max-width: 100%" title="Fabriano: The beautiful countryside">
+          <img class="grid-img" src="images/gum.jpg" alt="Photo of girl blowing bubblegum"
+                title="Stockholm, Sweden: cousin blowing bubble gum while looking for otters">
       </div>
 
       <div style="text-align: center" class="grid-text">
         <h1>Leave a Comment:</h1>
-        <h3>Number shown</h3>
-
-        <form action="/data" style="color:black">
-          <input type="number" style="width:50px" id="num-comments" name="num-comments" min="0" value="5" onchange="getComments(this.value)">
+        
+        <div style="text-align:left">
+        <form action="/data">
+          <label for="num-comments">Number shown</label>
+          <input type="number" style="color:black" id="num-comments" name="num-comments" min="0" value="5" onchange="getComments(this.value)">
         </form>
+        </div>
         <br/>
 
-        <form action="/data" method="POST" style="color:black">
-          <textarea name="text-input" placeholder="Enter comment here..."></textarea>
-          <input id="submit-button" type="submit"/>
-          <br/>
-        </form>
-
         <ul id="comment-container"></ul>
+
+        <div style="height:33%" overflow="auto">
+          <form style=action="/data" method="POST">
+            <textarea name="text-input" placeholder="Enter comment here..."></textarea>
+            <br/>
+            <input id="submit-button" type="submit"/>
+          </form>
+        </div>
 
         <br/>
         <form id="image-form" class="hidden" method="POST" enctype="multipart/form-data">
           <input type="file" name="image">
           <br/>
-          <input type="submit" value="Upload Image">
+          <input type="submit" style="color:black" value="Upload Image">
         </form>
 
         <br/>
@@ -112,8 +117,7 @@
       </div>
 
       <div class="grid-item">
-          <img src="images/gum.jpg" style="max-width: 100%;" alt="Photo of girl blowing bubblegum"
-                title="Stockholm, Sweden: cousin blowing bubble gum while looking for otters">
+          <img class="grid-img" src="images/mtn1.jpg" title="Fabriano: The beautiful countryside">
       </div>
 
       <div style="text-align: center" class="grid-text">

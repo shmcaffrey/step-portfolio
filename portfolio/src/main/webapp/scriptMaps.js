@@ -5,14 +5,14 @@ class Place {
     }
 }
 
-var chelseaContent;
-var hagueContent;
-var cMarker;
-var hMarker;
-
 function initMap() {
+    
+    let chelseaContent;
+    let hagueContent;
+    let cMarker;
+    let hMarker;
 
-    var darkMode = new google.maps.StyledMapType(
+    let darkMode = new google.maps.StyledMapType(
         [
             { elementType: 'geometry', stylers: [{ color: '#242f3e' }] },
             { elementType: 'labels.text.stroke', stylers: [{ color: '#242f3e' }] },
@@ -92,36 +92,33 @@ function initMap() {
                 elementType: 'labels.text.stroke',
                 stylers: [{ color: '#17263c' }]
             }
-        ], { name: "Dark Mode" });
+        ], { name: 'Dark Mode' });
 
-    var chelseaLatLng = { lat: 42.318, lng: -84.020 };
-    var hagueLatLng = { lat: 52.0705, lng: 4.3007 };
+    let chelseaLatLng = { lat: 42.318, lng: -84.020 };
+    let hagueLatLng = { lat: 52.0705, lng: 4.3007 };
 
-    var chelseaString = '<div id="content">' +
-    "<h1>Chelsea, MI</h1>" + 
-        "<div><p>Chelsea is a city in Washtenaw County in the U.S." +
-        " state of Michigan. The population was 4,944 at the 2010 census.</p></div>" +
-        "<p>Attribution: Chelsea, " +
+
+    let chelseaString = '<h1>Chelsea, MI</h1>' + 
+        '<p>Chelsea is a city in Washtenaw County in the U.S.' +
+        ' state of Michigan. The population was 4,944 at the 2010 census.</p>' +
+        '<p>Attribution: Chelsea, ' +
         '<a href="https://en.wikipedia.org/wiki/Chelsea,_Michigan">' +
-        "https://en.wikipedia.org/wiki/Chelsea,_Michigan</a> (last visited July 07, 2020).</p>" +
-        "</div>";
+        'https://en.wikipedia.org/wiki/Chelsea,_Michigan</a> (last visited July 07, 2020).</p>';
 
-    var hagueString =  '<div id="content">' +
-    "<h1>The Hague, NL</h1>" + 
-        "<div><p>The Hague is a city on the North Sea coast" +
-        " of the western Netherlands. Its Gothic-style Binnenhof" +
-        " (or Inner Court) complex is the seat of the Dutch parliament," +
-        " and 16th-century Noordeinde Palace is the king’s workplace.</p></div>" +
-        "<p>Attribution: The Hague, " +
+    let hagueString = '<h1>The Hague, NL</h1>' + 
+        '<p>The Hague is a city on the North Sea coast' +
+        ' of the western Netherlands. Its Gothic-style Binnenhof' +
+        ' (or Inner Court) complex is the seat of the Dutch parliament,' +
+        ' and 16th-century Noordeinde Palace is the king’s workplace.</p>' +
+        '<p>Attribution: The Hague, ' +
         '<a href="https://www.google.com/search?q=the+hague&rlz=1CAERIM_enUS906US906&oq=the+&aqs=chrome.0.69i59l3j69i57j46j69i61l2j69i65.1020j0j7&sourceid=chrome&ie=UTF-8">' +
-        "https://www.google.com</a> (last visited July 07, 2020).</p>" +
-        "</div>";
+        'https://www.google.com</a> (last visited July 07, 2020).</p>';
 
-    var map = new google.maps.Map(
-        document.getElementById("map"), {
+    let map = new google.maps.Map(
+        document.getElementById('map'), {
         center: chelseaLatLng,
         zoom: 8,
-        gestureHandling: "cooperative",
+        gestureHandling: 'cooperative',
         mapTypeControlOptions: {
             mapTypeIds: ['roadmap', 'satellite', 'hybrid', 'terrain',
                 'dark_mode']
@@ -131,14 +128,14 @@ function initMap() {
     cMarker = new google.maps.Marker({
         position: chelseaLatLng,
         map: map,
-        title: "Hometown",
+        title: 'Hometown',
         animation: google.maps.Animation.DROP,
     });
 
     hMarker = new google.maps.Marker({
         position: hagueLatLng,
         map: map,
-        title: "Au Pair Town",
+        title: 'Au Pair Town',
         animation: google.maps.Animation.DROP,
     });
 
@@ -152,19 +149,21 @@ function initMap() {
         pixelOffset:  new google.maps.Size(0, -20)
     });
 
-    cMarker.addListener("click", function() {
+    cMarker.addListener('click', function() {
         bounce(cMarker, chelseaContent);
     });
-    hMarker.addListener("click", function() {
+    hMarker.addListener('click', function() {
         bounce(hMarker, hagueContent);
     });
-    chelseaContent.addListener("closeclick", function() {
+
+    chelseaContent.addListener('closeclick', function() {
         bounce(cMarker, chelseaContent);
     });
-    hagueContent.addListener("closeclick", function() {
+    hagueContent.addListener('closeclick', function() {
         bounce(hMarker, hagueContent);
     });
-    map.mapTypes.set("dark_mode", darkMode);
+
+    map.mapTypes.set('dark_mode', darkMode);
     map.setTilt(45);
 }
 

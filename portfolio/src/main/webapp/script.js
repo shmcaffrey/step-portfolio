@@ -22,16 +22,16 @@ function plusSlides(n) {
 
 function showSlides(n) {
   var i;
-  var slides = document.getElementsByClassName("mySlides");
+  var slides = document.getElementsByClassName('mySlides');
 
   if (n > slides.length) {slideIndex = 1}    
   if (n < 1) {slideIndex = slides.length}
   for (i = 0; i < slides.length; i++) {
     if (i == slideIndex - 1) {
-      slides[slideIndex-1].style.display = "block";
+      slides[slideIndex-1].style.display = 'block';
     }
     else {
-      slides[i].style.display = "none";  
+      slides[i].style.display = 'none';  
     }
   }
 }
@@ -40,18 +40,23 @@ function showSlides(n) {
 function getComments(numComments) {
   
   if (numComments == null) {
-    numComments == "5";
+    numComments == '5';
   }
 
   // fetch data from server, parse as json file, then reference coms as an object
-  fetch("/data?num-comments=" + numComments).then(response => response.json()).then((comments) => {
-    const commentList = document.getElementById("comment-container");
-    commentList.innerText = "";
-    console.log("fetching comments");
-    comments.forEach((comment) => {
-      console.log(comment);
-      commentList.appendChild(createListElement(comment));
-    })
+  fetch('/data?num-comments=' + numComments).then(response => response.json()).then((comments) => {
+    const commentList = document.getElementById('comment-container');
+    commentList.innerText = '';
+    console.log('fetching comments');
+      comments.forEach((comment) => {
+        if (comment == null) {
+          console.log('no comment')
+        }
+        else {
+          console.log(comment);
+          commentList.appendChild(createListElement(comment));
+        }
+      })
   });
 
   fetch('/blob-upload').then((response) => {
@@ -62,8 +67,8 @@ function getComments(numComments) {
       messageForm.classList.remove('hidden');
     });
 
-  fetch("/store").then((response) => response.json()).then((imageUploadUrls) => {
-    const imgSlides = document.getElementById("slideshow");
+  fetch('/store').then((response) => response.json()).then((imageUploadUrls) => {
+    const imgSlides = document.getElementById('slideshow');
     imageUploadUrls.forEach((imgUrl) => {
       imgSlides.prepend(createSlideElement(imgUrl));
     })
@@ -82,20 +87,21 @@ function createListElement(comment) {
 
 //Once data from datastore is deleted then remove text from page
 function deleteAllComments() {
+    const commentList = getElementById('comment-container');
     const request = new Request('/delete-data', {method: 'POST'});
-    fetch(request).then(response => response.text()).then(getComments());
+    fetch(request).then(response => response.text()).then(getComments(0));
 }
 
 function fillNumComments() {
-    return document.getElementById("num-comments").value;
+    return document.getElementById('num-comments').value;
 }
 
 function createSlideElement(imgUrlIn) {
-    var slide = document.createElement("div");
-    slide.setAttribute("class", "mySlides");
+    var slide = document.createElement('div');
+    slide.setAttribute('class', 'mySlides');
     
-    var image = document.createElement("img");
-    image.setAttribute("src", imgUrlIn);
+    var image = document.createElement('img');
+    image.setAttribute('src', imgUrlIn);
     image.setAttribute('class', 'slideshow-img');
 
     //TODO: add count of pictures
