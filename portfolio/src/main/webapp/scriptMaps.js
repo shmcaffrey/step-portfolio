@@ -104,7 +104,7 @@ function initMap() {
         "<p>Attribution: Chelsea, " +
         '<a href="https://en.wikipedia.org/wiki/Chelsea,_Michigan">' +
         "https://en.wikipedia.org/wiki/Chelsea,_Michigan</a> (last visited July 07, 2020).</p>" +
-        "</div></div>";
+        "</div>";
 
     var hagueString =  '<div id="content">' +
     "<h1>The Hague, NL</h1>" + 
@@ -115,7 +115,7 @@ function initMap() {
         "<p>Attribution: The Hague, " +
         '<a href="https://www.google.com/search?q=the+hague&rlz=1CAERIM_enUS906US906&oq=the+&aqs=chrome.0.69i59l3j69i57j46j69i61l2j69i65.1020j0j7&sourceid=chrome&ie=UTF-8">' +
         "https://www.google.com</a> (last visited July 07, 2020).</p>" +
-        "</div></div>";
+        "</div>";
 
     var map = new google.maps.Map(
         document.getElementById("map"), {
