@@ -46,6 +46,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * When the user submits the form, Blobstore processes the file upload and then forwards the request
  * to this servlet. This servlet can then analyze the image using the Vision API.
+ * this code is from the walkthrough example to see if the Image analysis works 
  */
 @WebServlet("/image-analysis")
 public class ImageAnalysisServlet extends HttpServlet {
@@ -119,6 +120,8 @@ public class ImageAnalysisServlet extends HttpServlet {
   /**
    * Blobstore stores files as binary data. This function retrieves the binary data stored at the
    * BlobKey parameter.
+   * Assums a blobkey exists, if it does not, the user is has not uploaded an image and is prompted 
+   * to do so. This function does not run if that's the case. 
    */
   private byte[] getBlobBytes(BlobKey blobKey) throws IOException {
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();

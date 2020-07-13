@@ -191,19 +191,19 @@ function addUserMarkers(map) {
 }
 
 function addNewMarker(latLng) {
-    let latIn = latLng.lat();
-    let lngIn = latLng.lng();
-    const request = new Request(('/map-marker?lat=' + latIn + '&lng=' + lngIn), {method: 'POST'});
+    let params = new URLSearchParams();
+    params.append('lat', latLng.lat());
+    params.append('lng', latLng.lng());
+    const request = new Request(('/map-marker'), {method: 'POST', body: params});
     console.log('fetch completed')
     fetch(request).then(initMap());
 }
 
 function createMarker(coord, map) {
-    console.log("adding marker: " + coord[0] + ", " + coord[1]);
+    console.log('adding marker: ' + coord.lat + ', ' + coord.lng);
     let marker = new google.maps.Marker({
-        position: { lat: coord[0], lng: coord[1] },
+        position: { lat: coord.lat, lng: coord.lng },
         map: map,
         animation: google.maps.Animation.DROP
     });
 }
-// TODO: Add ability to have user add their own marker and content
