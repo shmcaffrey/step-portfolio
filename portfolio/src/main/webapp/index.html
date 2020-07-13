@@ -83,14 +83,16 @@
 
       <div style="text-align: center" class="grid-text">
         <h1>Leave a Comment:</h1>
-        
+        <br/>
+
         <div style="text-align:left">
         <form action="/data">
-          <label for="num-comments">Number shown</label>
-          <input type="number" style="color:black" id="num-comments" name="num-comments" min="0" value="5" onchange="getComments(this.value)">
+          <p style="float:left" for="num-comments">Number shown: </p>
+          <input type="number" id="num-comments" name="num-comments" min="0" value="5" onchange="getComments(this.value)">
         </form>
         </div>
-        <br/>
+        
+        <br/><br/>
 
         <ul id="comment-container"></ul>
 

@@ -6,7 +6,6 @@ class Place {
 }
 
 function initMap() {
-    
     let chelseaContent;
     let hagueContent;
     let cMarker;
@@ -117,7 +116,7 @@ function initMap() {
     let map = new google.maps.Map(
         document.getElementById('map'), {
         center: chelseaLatLng,
-        zoom: 8,
+        zoom: 4,
         gestureHandling: 'cooperative',
         mapTypeControlOptions: {
             mapTypeIds: ['roadmap', 'satellite', 'hybrid', 'terrain',
@@ -165,6 +164,12 @@ function initMap() {
 
     map.mapTypes.set('dark_mode', darkMode);
     map.setTilt(45);
+
+    map.addListener('rightclick', function (e) {
+        addNewMarker(e.latLng);
+    });
+
+    addUserMarkers(map);
 }
 
 function bounce(marker, infoWindow) {
@@ -177,4 +182,28 @@ function bounce(marker, infoWindow) {
     }
 }
 
+function addUserMarkers(map) {
+    fetch('/map-marker').then(response => response.json()).then((coords) => {
+        coords.forEach((coord) => {
+            createMarker(coord, map);
+        })
+    });
+}
+
+function addNewMarker(latLng) {
+    let latIn = latLng.lat();
+    let lngIn = latLng.lng();
+    const request = new Request(('/map-marker?lat=' + latIn + '&lng=' + lngIn), {method: 'POST'});
+    console.log('fetch completed')
+    fetch(request).then(initMap());
+}
+
+function createMarker(coord, map) {
+    console.log("adding marker: " + coord[0] + ", " + coord[1]);
+    let marker = new google.maps.Marker({
+        position: { lat: coord[0], lng: coord[1] },
+        map: map,
+        animation: google.maps.Animation.DROP
+    });
+}
 // TODO: Add ability to have user add their own marker and content
