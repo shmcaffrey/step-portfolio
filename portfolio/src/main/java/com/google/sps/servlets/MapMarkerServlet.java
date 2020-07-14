@@ -34,11 +34,11 @@ class Location {
   public Double lat;
   public Double lng;
 
+  public Location() {}
   public Location(Double latIn, Double lngIn) {
     this.lat = latIn;
     this.lng = lngIn;
   }
-  public Location() {}
 }
 
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
