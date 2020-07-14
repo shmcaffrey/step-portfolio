@@ -30,6 +30,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
+class Location {
+  public Double lat;
+  public Double lng;
+
+  public Location(Double latIn, Double lngIn) {
+    this.lat = latIn;
+    this.lng = lngIn;
+  }
+  public Location() {}
+}
+
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/map-marker")
 public class MapMarkerServlet extends HttpServlet {
@@ -40,18 +51,16 @@ public class MapMarkerServlet extends HttpServlet {
     Query query = new Query("map-marker").addSort("timestamp", SortDirection.DESCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
-    ArrayList<Map<String, Double>> pairList = new ArrayList<Map<String, Double>>();
+    ArrayList<Location> locations = new ArrayList<Location>();
 
     for (Entity entity : results.asIterable()) {  
-        Map<String, Double> latLngPair = new HashMap<>();
-        Double latEntry = (Double) entity.getProperty("lat");
-        Double lngEntry = (Double) entity.getProperty("lng");
-        latLngPair.put("lat", latEntry);
-        latLngPair.put("lng", lngEntry);
-        pairList.add(latLngPair);
+      Double latEntry = (Double) entity.getProperty("lat");
+      Double lngEntry = (Double) entity.getProperty("lng");
+      Location locality = new Location(latEntry, lngEntry);
+      locations.add(locality);
     }
 
-    String json = convertJsonUsingGson(pairList);
+    String json = convertJsonUsingGson(locations);
     response.setContentType("application/json;");
     response.getWriter().println(json);
   }
@@ -59,37 +68,38 @@ public class MapMarkerServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     
-    Map<String, Double> pairLatLng = getCoords(request);
+    Location locality = getCoords(request);
     Long timestamp = System.currentTimeMillis();
     Entity markerEntity = new Entity("map-marker");
-    markerEntity.setProperty("lat", pairLatLng.get("lat"));
-    markerEntity.setProperty("lng", pairLatLng.get("lng"));
+    markerEntity.setProperty("lat", locality.lat);
+    markerEntity.setProperty("lng", locality.lng);
     markerEntity.setProperty("timestamp", timestamp);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(markerEntity);
   }
 
-  private String convertJsonUsingGson(ArrayList<Map<String, Double>> latLngPair) {
-    String json = new Gson().toJson(latLngPair);
+  private String convertJsonUsingGson(ArrayList<Location> locality) {
+    String json = new Gson().toJson(locality);
     return json;
   }
 
-  private Map<String, Double> getCoords(HttpServletRequest request) {
+  private Location getCoords(HttpServletRequest request) {
 
-      String latInputStr = request.getParameter("lat");
-      String lngInputStr = request.getParameter("lng");
-      Map<String, Double> pair= new HashMap<String, Double>();
+    String latInputStr = request.getParameter("lat");
+    String lngInputStr = request.getParameter("lng");
 
-      try {
-          pair.put("lat", Double.parseDouble(latInputStr));
-          pair.put("lng", Double.parseDouble(lngInputStr));
-      } catch (NumberFormatException e) {
-          System.err.println("Could not convert to Double: " + latInputStr + "or " + lngInputStr);
-      }
+    Location locality = new Location();
 
-      log("pair requested: " + pair.get("lat") + " " + pair.get("lng"));
-      return pair;
+    try {
+      locality.lat = Double.parseDouble(latInputStr);
+      locality.lng = Double.parseDouble(lngInputStr);
+    } catch (NumberFormatException e) {
+      System.err.println("Could not convert to Double: " + latInputStr + "or " + lngInputStr);
+    }
+
+    log("pair requested: " + locality.lat + " " + locality.lng);
+    return locality;
   }
 }
 

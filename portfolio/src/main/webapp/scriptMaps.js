@@ -1,8 +1,8 @@
 class Place {
-    constructor(markerIn, contentIn) {
-        this.marker = markerIn;
-        this.content = contentIn;
-    }
+  constructor(markerIn, contentIn) {
+    this.marker = markerIn;
+    this.content = contentIn;
+  }
 }
 
 function initMap() {
