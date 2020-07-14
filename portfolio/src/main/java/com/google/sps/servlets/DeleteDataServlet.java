@@ -31,7 +31,6 @@ public class DeleteDataServlet extends HttpServlet {
       PreparedQuery results = datastore.prepare(query);
 
       for (Entity entity : results.asIterable()) { 
-        //long id = Long.parseLong();
         Key commentEntityKey = entity.getKey();
         datastore.delete(commentEntityKey);
       }
