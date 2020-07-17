@@ -27,87 +27,80 @@ public final class FindMeetingQuery {
   private static final int DAY_IN_MINS = (60 * 24);
 
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
-    System.out.println("new request");
-    Collection<TimeRange> collection = new ArrayList<TimeRange>();
-
     // EDGE CASES: request time over/under minutes in a day number of attendees is 0
     if (request.getDuration() > DAY_IN_MINS || request.getDuration() < 0) {
       return Arrays.asList();
-    } else if (request.getAttendees() == null) {
+    } else if (request.getAttendees() == null && request.getOptionalAttendees().isEmpty()) {
       return Arrays.asList(TimeRange.WHOLE_DAY);
     }
 
-    int currStart = TimeRange.START_OF_DAY;
-    int currEnd = TimeRange.END_OF_DAY;
-    
-    // get every attendee's blocked off time into a cohesive arrayList to sort
-    // don't add duplicate events
-    ArrayList<TimeRange> allEventTimes = new ArrayList<>();
-    Set<String> eventTitles = new HashSet<>();
+    //returns list of needed attendees event times, put together.
+    ArrayList<TimeRange> allEventTimes = getAllEventTimes(request.getAttendees(), events);
 
+    // no attendees match any events
+    if (allEventTimes.isEmpty() && request.getOptionalAttendees().isEmpty()) {
+      return Arrays.asList(TimeRange.WHOLE_DAY);
+    } else {
+      Collections.sort(allEventTimes, TimeRange.ORDER_BY_END);
+    }
 
-    for (String person : request.getAttendees()) {
-      System.out.println("Requested Attendee: " + person);
-      for (Event event : events) {
+    //gets a list of all the possible times for non-optional attendees returns empty if no eventTimes
+    Collection<TimeRange> meetingOptions = getMeetingRequest(allEventTimes, request.getDuration());
+    Collection<TimeRange> optionalMeetingOptions = new ArrayList<TimeRange>();
+    // get optional attendees open times, if open times overlap with set open times 
+    //  then temp. adjust duration and continue
+    if (!request.getOptionalAttendees().isEmpty()) {
+      ArrayList<TimeRange> optionalAttendeeTimes = getAllEventTimes(request.getOptionalAttendees(), events);
+      Collections.sort(optionalAttendeeTimes, TimeRange.ORDER_BY_END);
+      optionalMeetingOptions = getMeetingRequest(optionalAttendeeTimes, request.getDuration());
 
-        //TO DELETE
-        System.out.println("Event in Event list: " + event.getTitle());
-        System.out.println("List of attendees in event: ");
-        for (String attendee : event.getAttendees()) {
-          System.out.println(attendee);
-        }
-        // END DELETE
+      if (optionalMeetingOptions.isEmpty() && request.getAttendees().isEmpty()) {
+        return Arrays.asList();
+      } else if (allEventTimes.isEmpty()) {
+        return optionalMeetingOptions;
+      }
 
-        if (event.getAttendees().contains(person)) {
-          if (!eventTitles.contains(event.getTitle())) {
-            allEventTimes.add(event.getWhen());
-            System.out.println("add event: START: " + event.getWhen().start() + " END: " + event.getWhen().end());
-          }
-        }
+      // combine event time lists and return optional times if they exist
+      for (TimeRange optional : optionalAttendeeTimes) {
+        allEventTimes.add(optional);
+      }
+
+      Collections.sort(allEventTimes, TimeRange.ORDER_BY_END);
+      optionalMeetingOptions = getMeetingRequest(allEventTimes, request.getDuration());
+      
+      if (!optionalMeetingOptions.isEmpty()) {
+        return optionalMeetingOptions;
       }
     }
 
-    // no attendees match any events
-    if (allEventTimes.isEmpty()) {
-      System.out.println("no attendees match events");
-      return Arrays.asList(TimeRange.WHOLE_DAY);
-    }
+    return meetingOptions;
+  }
 
-    Collections.sort(allEventTimes, TimeRange.ORDER_BY_END); //TO DELETE
-
-
-    System.out.println("sorting complete"); // TO DELETE
-    for (TimeRange aEvent : allEventTimes) {
-      System.out.println("postsort. START: " + aEvent.start() + " END: " + aEvent.end());
-    }
+  private Collection<TimeRange> getMeetingRequest(ArrayList<TimeRange> eventTimes, Long duration) {
+    Collection<TimeRange> collection = new ArrayList<TimeRange>();
+    int currStart = TimeRange.START_OF_DAY;
+    int currEnd = TimeRange.END_OF_DAY;
 
     // Create new time which starts at first opening and ends at  of request
-
     newTime: 
-    for(TimeRange eventTime : allEventTimes) { 
+    for (TimeRange eventTime : eventTimes) {
       currEnd = eventTime.start();
-      System.out.println("current start: " + currStart + " current end: " + currEnd);
       TimeRange proposeTime = TimeRange.fromStartEnd(currStart, currEnd, false);
 
       // check that proposed time is longer than request dureation. Also ensures
       // that the propsed duration is not negtive
-      if (checkDuration(proposeTime, request.getDuration())) {
-        System.out.println("durration large enough");
-        for (TimeRange anEvent : allEventTimes) {
-          if (anEvent.equals(proposeTime)) {
-            continue;
-          } else if (anEvent.overlaps(proposeTime)) {
-            proposeTime = fixRange(anEvent, proposeTime);
-            if (!checkDuration(proposeTime, request.getDuration())) {
-              currStart = eventTime.end();
-              continue newTime;
-            }
-          }
+      if (checkDuration(proposeTime, duration)) {
+        // checks if proposed time overlaps other times and makes adjustments
+        // if duration is too short with new time, proposed time is nullified
+        proposeTime = checkProposedTime(proposeTime, duration, eventTimes);
+        if (proposeTime == null) {
+          currStart = eventTime.end();
+          continue newTime;
         }
 
         // if the proposed time is already within the collection don't add
-        for (TimeRange RequestOptions : collection) {
-          if (RequestOptions.equals(proposeTime)) {
+        for (TimeRange requestOption : collection) {
+          if (proposeTime.equals(requestOption)) {
             currStart = eventTime.end();
             continue;
           }
@@ -115,36 +108,67 @@ public final class FindMeetingQuery {
 
         collection.add(proposeTime);
       }
-      else {
-        System.out.println("duration too short: " + proposeTime.duration());
-      }
       currStart = eventTime.end();
     }
     //  add time gap for end of day, current start is on last 
     TimeRange proposeTime = TimeRange.fromStartEnd(currStart, DAY_IN_MINS, false);
-    if (proposeTime.duration() > request.getDuration()) {
+    if (proposeTime.duration() > duration) {
       collection.add(proposeTime);
     }
 
     return collection;
-    
   }
-  
+
+  // returns a list of all event times based on attendee list, no duplicates.
+  private ArrayList<TimeRange> getAllEventTimes(Collection<String> attendees, Collection<Event> events) {
+    ArrayList<TimeRange> allEventTimes = new ArrayList<>();
+    Set<String> eventTitles = new HashSet<>();
+
+    for (String attendee : attendees) {
+      for (Event event : events) {
+        if (event.getAttendees().contains(attendee)) {
+          if (!eventTitles.contains(event.getTitle())) {
+            eventTitles.add(event.getTitle());
+            allEventTimes.add(event.getWhen());
+          }
+        }
+      }
+    }
+    return allEventTimes;
+  }
+
+  // Checks if proposed time based on attendence overlaps any other attendee events
+  // If there are overlaps then it returns the new proposed time 
+  private TimeRange checkProposedTime(TimeRange proposeTime, long duration, ArrayList<TimeRange> allEventTimes) {
+    for (TimeRange anEvent : allEventTimes) {
+      if (anEvent.equals(proposeTime)) {
+        continue;
+      } else if (anEvent.overlaps(proposeTime)) {
+        proposeTime = fixRange(anEvent, proposeTime);
+        if (!checkDuration(proposeTime, duration)) {
+          return null;
+        }
+      }
+    }
+    return proposeTime;
+  }
+
+  // Ensures proposed time has long enough duration
   private boolean checkDuration(TimeRange proposed, long duration) {
     return proposed.duration() >= duration;
   }
 
+  // If proposed meeting time overlaps with another event, adjust start or end of proposed
   private TimeRange fixRange(TimeRange event, TimeRange proposed) {
     if (event.start() < proposed.start()) {
-      System.out.println("proposed start is within another events start, adusting end");
       return TimeRange.fromStartEnd(proposed.start(), event.start(), false);
     }
     else if (event.start() < proposed.end()) {
-      System.out.println("proposed end is within another events start. adjusting end");
       return TimeRange.fromStartEnd(proposed.start(), event.start(), false);
     }
     //should not reach here
-    System.out.println(", returning null");
+    System.out.println("returning null");
     return null;
   }
+
 }
