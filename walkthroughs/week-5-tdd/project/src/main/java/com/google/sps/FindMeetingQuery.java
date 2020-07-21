@@ -24,31 +24,30 @@ import java.lang.*;
 import java.util.Comparator;
 
 public final class FindMeetingQuery {
-  private static final int DAY_IN_MINS = (60 * 24);
+  private static final int MINS_IN_DAY = (60 * 24);
 
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
     // EDGE CASES: request time over/under minutes in a day number of attendees is 0
-    if (request.getDuration() > DAY_IN_MINS || request.getDuration() < 0) {
+    if (request.getDuration() > MINS_IN_DAY || request.getDuration() < 0) {
       return Arrays.asList();
-    } else if (request.getAttendees() == null && request.getOptionalAttendees().isEmpty()) {
+    } else if (request.getAttendees().isEmpty() && request.getOptionalAttendees().isEmpty()) {
       return Arrays.asList(TimeRange.WHOLE_DAY);
     }
 
-    //returns list of needed attendees event times, put together.
+    // Returns list of needed attendees event times nased on requested members in a single array
     ArrayList<TimeRange> allEventTimes = getAllEventTimes(request.getAttendees(), events);
 
-    // no attendees match any events
+    // No attendees match any events
     if (allEventTimes.isEmpty() && request.getOptionalAttendees().isEmpty()) {
       return Arrays.asList(TimeRange.WHOLE_DAY);
-    } else {
-      Collections.sort(allEventTimes, TimeRange.ORDER_BY_END);
     }
+    Collections.sort(allEventTimes, TimeRange.ORDER_BY_END);
 
-    //gets a list of all the possible times for non-optional attendees returns empty if no eventTimes
+    // Returns a list of all optional attendee event times on requested members in a single array. 
     Collection<TimeRange> meetingOptions = getMeetingRequest(allEventTimes, request.getDuration());
     Collection<TimeRange> optionalMeetingOptions = new ArrayList<TimeRange>();
-    // get optional attendees open times, if open times overlap with set open times 
-    //  then temp. adjust duration and continue
+    // Get optional attendees open times, if open times overlap with set open times 
+    //     then temp. adjust duration and continue
     if (!request.getOptionalAttendees().isEmpty()) {
       ArrayList<TimeRange> optionalAttendeeTimes = getAllEventTimes(request.getOptionalAttendees(), events);
       Collections.sort(optionalAttendeeTimes, TimeRange.ORDER_BY_END);
@@ -72,16 +71,17 @@ public final class FindMeetingQuery {
         return optionalMeetingOptions;
       }
     }
-
     return meetingOptions;
   }
 
+  //  Requires an array of TimeRanges sorted by acending order by end time
+  //  Returns a collection of all open times between events that are longer than the requested duration
   private Collection<TimeRange> getMeetingRequest(ArrayList<TimeRange> eventTimes, Long duration) {
-    Collection<TimeRange> collection = new ArrayList<TimeRange>();
+    Collection<TimeRange> meetingTimes = new ArrayList<TimeRange>();
     int currStart = TimeRange.START_OF_DAY;
     int currEnd = TimeRange.END_OF_DAY;
 
-    // Create new time which starts at first opening and ends at  of request
+    // Create new time which starts at end of prev event and ends at beginning of next request
     newTime: 
     for (TimeRange eventTime : eventTimes) {
       currEnd = eventTime.start();
@@ -99,24 +99,22 @@ public final class FindMeetingQuery {
         }
 
         // if the proposed time is already within the collection don't add
-        for (TimeRange requestOption : collection) {
+        for (TimeRange requestOption : meetingTimes) {
           if (proposeTime.equals(requestOption)) {
             currStart = eventTime.end();
             continue;
           }
         }
-
-        collection.add(proposeTime);
+        meetingTimes.add(proposeTime);
       }
       currStart = eventTime.end();
     }
     //  add time gap for end of day, current start is on last 
-    TimeRange proposeTime = TimeRange.fromStartEnd(currStart, DAY_IN_MINS, false);
+    TimeRange proposeTime = TimeRange.fromStartEnd(currStart, MINS_IN_DAY, false);
     if (proposeTime.duration() > duration) {
-      collection.add(proposeTime);
+      meetingTimes.add(proposeTime);
     }
-
-    return collection;
+    return meetingTimes;
   }
 
   // returns a list of all event times based on attendee list, no duplicates.
@@ -137,13 +135,12 @@ public final class FindMeetingQuery {
     return allEventTimes;
   }
 
-  // Checks if proposed time based on attendence overlaps any other attendee events
-  // If there are overlaps then it returns the new proposed time 
+  //  Requires a proposed requestedMeeting time based off allEventTimes that has an initial duration >= requested duration
+  //  Checks if proposed time based on attendence overlaps any other attendee events
+  //  If there are overlaps then it returns the new proposed time 
   private TimeRange checkProposedTime(TimeRange proposeTime, long duration, ArrayList<TimeRange> allEventTimes) {
     for (TimeRange anEvent : allEventTimes) {
-      if (anEvent.equals(proposeTime)) {
-        continue;
-      } else if (anEvent.overlaps(proposeTime)) {
+      if (anEvent.overlaps(proposeTime)) {
         proposeTime = fixRange(anEvent, proposeTime);
         if (!checkDuration(proposeTime, duration)) {
           return null;
@@ -160,10 +157,10 @@ public final class FindMeetingQuery {
 
   // If proposed meeting time overlaps with another event, adjust start or end of proposed
   private TimeRange fixRange(TimeRange event, TimeRange proposed) {
-    if (event.start() < proposed.start()) {
+    if (proposed.start() > event.start()) {
       return TimeRange.fromStartEnd(proposed.start(), event.start(), false);
     }
-    else if (event.start() < proposed.end()) {
+    else if (proposed.end() > event.start()) {
       return TimeRange.fromStartEnd(proposed.start(), event.start(), false);
     }
     //should not reach here
