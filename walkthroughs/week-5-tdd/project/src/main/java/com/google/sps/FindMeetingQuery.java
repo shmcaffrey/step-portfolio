@@ -74,31 +74,32 @@ public final class FindMeetingQuery {
     return meetingOptions;
   }
 
-  //  Requires an array of TimeRanges sorted by acending order by end time
-  //  Returns a collection of all open times between events that are longer than the requested duration
-  private Collection<TimeRange> getMeetingRequest(ArrayList<TimeRange> eventTimes, Long duration) {
+  //  ASSUMES: eventTimes is not empty and is sorted in acending order by end time, duration is greater than 0. 
+  //  EFFECTS: Returns a list of TimeRanges with durations longer than requestDuration that do not overlap with any events in eventTimes.
+  private Collection<TimeRange> getMeetingRequest(ArrayList<TimeRange> eventTimes, Long requestDuration) {
     Collection<TimeRange> meetingTimes = new ArrayList<TimeRange>();
     int currStart = TimeRange.START_OF_DAY;
     int currEnd = TimeRange.END_OF_DAY;
 
-    // Create new time which starts at end of prev event and ends at beginning of next request
-    newTime: 
     for (TimeRange eventTime : eventTimes) {
       currEnd = eventTime.start();
+      //  proposeTime finds the gap between eventA and eventB 
       TimeRange proposeTime = TimeRange.fromStartEnd(currStart, currEnd, false);
 
-      // check that proposed time is longer than request dureation. Also ensures
-      // that the propsed duration is not negtive
-      if (checkDuration(proposeTime, duration)) {
-        // checks if proposed time overlaps other times and makes adjustments
-        // if duration is too short with new time, proposed time is nullified
-        proposeTime = checkProposedTime(proposeTime, duration, eventTimes);
+      //  Ensures no proposedTimes that are negative
+      if (checkDuration(proposeTime.duration(), requestDuration)) {
+
+        // returns null if the proposedTime's duration is not longer than the request duration
+        //    and skips to next loop with current eventTime.end() as the start
+        proposeTime = checkProposedTime(proposeTime, requestDuration, eventTimes);
         if (proposeTime == null) {
           currStart = eventTime.end();
-          continue newTime;
+          continue;
         }
 
-        // if the proposed time is already within the collection don't add
+        //  In the event thattwo events end at the same time events: |--|---]
+        //      the proposed time would be aducted for the inner event and be equivalent to the outer event
+        //      skips to next loop with current eventTime.end() as the start
         for (TimeRange requestOption : meetingTimes) {
           if (proposeTime.equals(requestOption)) {
             currStart = eventTime.end();
@@ -111,18 +112,19 @@ public final class FindMeetingQuery {
     }
     //  add time gap for end of day, current start is on last 
     TimeRange proposeTime = TimeRange.fromStartEnd(currStart, MINS_IN_DAY, false);
-    if (proposeTime.duration() > duration) {
+    if (checkDuration(proposeTime.duration(), requestDuration)) {
       meetingTimes.add(proposeTime);
     }
     return meetingTimes;
   }
 
-  // returns a list of all event times based on attendee list, no duplicates.
-  private ArrayList<TimeRange> getAllEventTimes(Collection<String> attendees, Collection<Event> events) {
+  // EFFECTS: Returns a cumulative list of all requestAttendees's events from the event list without duplicates
+  private ArrayList<TimeRange> getAllEventTimes(Collection<String> requestAttendees, Collection<Event> events) {
     ArrayList<TimeRange> allEventTimes = new ArrayList<>();
+    //  To ensure no duplicates.
     Set<String> eventTitles = new HashSet<>();
 
-    for (String attendee : attendees) {
+    for (String attendee : requestAttendees) {
       for (Event event : events) {
         if (event.getAttendees().contains(attendee)) {
           if (!eventTitles.contains(event.getTitle())) {
@@ -135,14 +137,17 @@ public final class FindMeetingQuery {
     return allEventTimes;
   }
 
-  //  Requires a proposed requestedMeeting time based off allEventTimes that has an initial duration >= requested duration
-  //  Checks if proposed time based on attendence overlaps any other attendee events
-  //  If there are overlaps then it returns the new proposed time 
-  private TimeRange checkProposedTime(TimeRange proposeTime, long duration, ArrayList<TimeRange> allEventTimes) {
+
+  // ASSUMES:  Duration of proposeTime is longer than or equal to requestDuration
+  // MODIFIES: proposedTime [if any events in allEventTimes overlap, fixes the time]
+  // EFFECTS:  Returns original proposedTime if it does not overlap with any other Events in allEventTimes
+  //           Returns fixed proposedTime that does not overlap with any events in allEventTimes
+  //           Returns null if the proposedTime overlaps an event and the fixed proposed time has too small of a duration. 
+  private TimeRange checkProposedTime(TimeRange proposeTime, long requestDuration, ArrayList<TimeRange> allEventTimes) {
     for (TimeRange anEvent : allEventTimes) {
       if (anEvent.overlaps(proposeTime)) {
         proposeTime = fixRange(anEvent, proposeTime);
-        if (!checkDuration(proposeTime, duration)) {
+        if (!checkDuration(proposeTime.duration(), requestDuration)) {
           return null;
         }
       }
@@ -150,21 +155,21 @@ public final class FindMeetingQuery {
     return proposeTime;
   }
 
-  // Ensures proposed time has long enough duration
-  private boolean checkDuration(TimeRange proposed, long duration) {
-    return proposed.duration() >= duration;
+ 
+  //  EFFECTS: Returns if the proposed event time duration is longer than the requestDuration
+  private boolean checkDuration(long proposedDuration, long requestDuration) {
+    return proposedDuration >= requestDuration;
   }
 
-  // If proposed meeting time overlaps with another event, adjust start or end of proposed
+  
+  //   ASSUMES: event overlaps proposed
   private TimeRange fixRange(TimeRange event, TimeRange proposed) {
-    if (proposed.start() > event.start()) {
+    // if (proposed.start() > event.start()) {
+    //   return TimeRange.fromStartEnd(event.end(), proposed.end(), false);
+    // } Works without this function
+     if (proposed.end() > event.start()) {
       return TimeRange.fromStartEnd(proposed.start(), event.start(), false);
     }
-    else if (proposed.end() > event.start()) {
-      return TimeRange.fromStartEnd(proposed.start(), event.start(), false);
-    }
-    //should not reach here
-    System.out.println("returning null");
     return null;
   }
 
