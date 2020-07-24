@@ -74,6 +74,25 @@ public final class FindMeetingQuery {
     return meetingOptions;
   }
 
+    // EFFECTS: Returns a cumulative list of all requestAttendees's events from the event list without duplicates
+  private ArrayList<TimeRange> getAllEventTimes(Collection<String> requestAttendees, Collection<Event> events) {
+    ArrayList<TimeRange> allEventTimes = new ArrayList<>();
+    //  To ensure no duplicates.
+    Set<String> eventTitles = new HashSet<>();
+
+    for (String attendee : requestAttendees) {
+      for (Event event : events) {
+        if (event.getAttendees().contains(attendee)) {
+          if (!eventTitles.contains(event.getTitle())) {
+            eventTitles.add(event.getTitle());
+            allEventTimes.add(event.getWhen());
+          }
+        }
+      }
+    }
+    return allEventTimes;
+  }
+
   //  ASSUMES: eventTimes is not empty and is sorted in acending order by end time, duration is greater than 0. 
   //  EFFECTS: Returns a list of TimeRanges with durations longer than requestDuration that do not overlap with any events in eventTimes.
   private Collection<TimeRange> getMeetingRequest(ArrayList<TimeRange> eventTimes, Long requestDuration) {
@@ -97,7 +116,7 @@ public final class FindMeetingQuery {
           continue;
         }
 
-        //  In the event thattwo events end at the same time events: |--|---]
+        //  In the event that two events end at the same time events: |--|---]
         //      the proposed time would be aducted for the inner event and be equivalent to the outer event
         //      skips to next loop with current eventTime.end() as the start
         for (TimeRange requestOption : meetingTimes) {
@@ -118,59 +137,50 @@ public final class FindMeetingQuery {
     return meetingTimes;
   }
 
-  // EFFECTS: Returns a cumulative list of all requestAttendees's events from the event list without duplicates
-  private ArrayList<TimeRange> getAllEventTimes(Collection<String> requestAttendees, Collection<Event> events) {
-    ArrayList<TimeRange> allEventTimes = new ArrayList<>();
-    //  To ensure no duplicates.
-    Set<String> eventTitles = new HashSet<>();
-
-    for (String attendee : requestAttendees) {
-      for (Event event : events) {
-        if (event.getAttendees().contains(attendee)) {
-          if (!eventTitles.contains(event.getTitle())) {
-            eventTitles.add(event.getTitle());
-            allEventTimes.add(event.getWhen());
-          }
-        }
-      }
-    }
-    return allEventTimes;
-  }
-
-
   // ASSUMES:  Duration of proposeTime is longer than or equal to requestDuration
   // MODIFIES: proposedTime [if any events in allEventTimes overlap, fixes the time]
   // EFFECTS:  Returns original proposedTime if it does not overlap with any other Events in allEventTimes
   //           Returns fixed proposedTime that does not overlap with any events in allEventTimes
-  //           Returns null if the proposedTime overlaps an event and the fixed proposed time has too small of a duration. 
+  //           Returns null if fixRange results in a null event
   private TimeRange checkProposedTime(TimeRange proposeTime, long requestDuration, ArrayList<TimeRange> allEventTimes) {
     for (TimeRange anEvent : allEventTimes) {
       if (anEvent.overlaps(proposeTime)) {
-        proposeTime = fixRange(anEvent, proposeTime);
-        if (!checkDuration(proposeTime.duration(), requestDuration)) {
-          return null;
-        }
+        proposeTime = fixRange(anEvent, proposeTime, requestDuration);
       }
     }
     return proposeTime;
   }
-
+  
+  //  ASSUMES: event and proposed overlap
+  //           proposed.end is never >= an overlappingEvent.end 
+  //               Event:       [-----]  or [----]   or [----]
+  //               Proposed:  [---------]     [----]      [--]
+  //             in the cases above the proposed time end would stop at the 
+  //             events start, if would never skip an event who's end time intersects it
+  //             because the events are ordered in acending order by end time
+  //  EFFECTS: 
+  //         1)  Event:       |--------|
+  //             Proposed:       |--|
+  //             RETURNS: null::new duration is negative
+  //         2)  Event:           [----------]
+  //             Proposed:  [---------]
+  //             new proposed time becomes proposed start and event start
+  //             RETURNS:  shortened proposed time || null::new duration is too short for request 
+  private TimeRange fixRange(TimeRange overlappingEvent, TimeRange proposed, long requestDuration) {
+    if (proposed.end() > overlappingEvent.start()) {
+      proposed = TimeRange.fromStartEnd(proposed.start(), overlappingEvent.start(), false);
+      if (!checkDuration(proposed.duration(), requestDuration)) {
+          return null;
+      }
+      return proposed;
+    }
+    // should no reach here, the case that they don't overlap.
+    return null;
+  }
  
   //  EFFECTS: Returns if the proposed event time duration is longer than the requestDuration
   private boolean checkDuration(long proposedDuration, long requestDuration) {
     return proposedDuration >= requestDuration;
-  }
-
-  
-  //   ASSUMES: event overlaps proposed
-  private TimeRange fixRange(TimeRange event, TimeRange proposed) {
-    // if (proposed.start() > event.start()) {
-    //   return TimeRange.fromStartEnd(event.end(), proposed.end(), false);
-    // } Works without this function
-     if (proposed.end() > event.start()) {
-      return TimeRange.fromStartEnd(proposed.start(), event.start(), false);
-    }
-    return null;
   }
 
 }
