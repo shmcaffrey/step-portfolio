@@ -34,44 +34,38 @@ public final class FindMeetingQuery {
       return Arrays.asList(TimeRange.WHOLE_DAY);
     }
 
-    // Returns list of needed attendees event times nased on requested members in a single array
-    ArrayList<TimeRange> allEventTimes = getAllEventTimes(request.getAttendees(), events);
+    //compile list of attendees
+    Collection<String> allAttendees = new ArrayList<String>();
+    for (String attendee : request.getAttendees()) {
+      allAttendees.add(attendee);
+    } for (String attendee : request.getOptionalAttendees()) {
+      allAttendees.add(attendee);
+    }
 
-    // No attendees match any events
-    if (allEventTimes.isEmpty() && request.getOptionalAttendees().isEmpty()) {
+    // returns list of events all attendees have scheduled.
+    ArrayList<TimeRange> allEventTimes = getAllEventTimes(allAttendees, events);
+    if(allEventTimes.isEmpty()) {
       return Arrays.asList(TimeRange.WHOLE_DAY);
     }
+
     Collections.sort(allEventTimes, TimeRange.ORDER_BY_END);
 
-    // Returns a list of all optional attendee event times on requested members in a single array. 
+    // Returns a list of all possible requested meeting times for all attendees
     Collection<TimeRange> meetingOptions = getMeetingRequest(allEventTimes, request.getDuration());
-    Collection<TimeRange> optionalMeetingOptions = new ArrayList<TimeRange>();
-    // Get optional attendees open times, if open times overlap with set open times 
-    //     then temp. adjust duration and continue
-    if (!request.getOptionalAttendees().isEmpty()) {
-      ArrayList<TimeRange> optionalAttendeeTimes = getAllEventTimes(request.getOptionalAttendees(), events);
-      Collections.sort(optionalAttendeeTimes, TimeRange.ORDER_BY_END);
-      optionalMeetingOptions = getMeetingRequest(optionalAttendeeTimes, request.getDuration());
-
-      if (optionalMeetingOptions.isEmpty() && request.getAttendees().isEmpty()) {
-        return Arrays.asList();
-      } else if (allEventTimes.isEmpty()) {
-        return optionalMeetingOptions;
-      }
-
-      // combine event time lists and return optional times if they exist
-      for (TimeRange optional : optionalAttendeeTimes) {
-        allEventTimes.add(optional);
-      }
-
-      Collections.sort(allEventTimes, TimeRange.ORDER_BY_END);
-      optionalMeetingOptions = getMeetingRequest(allEventTimes, request.getDuration());
-      
-      if (!optionalMeetingOptions.isEmpty()) {
-        return optionalMeetingOptions;
-      }
+    if (!meetingOptions.isEmpty()) {
+      return meetingOptions;
+    } else if (request.getAttendees().isEmpty()) {
+      return Arrays.asList();
     }
-    return meetingOptions;
+
+    //  If meetingOptions was empty, then only run with required attendees 
+    allEventTimes = getAllEventTimes(request.getAttendees(), events);
+    if (allEventTimes.isEmpty()) {
+      return Arrays.asList(TimeRange.WHOLE_DAY);
+    }
+
+    Collections.sort(allEventTimes, TimeRange.ORDER_BY_END);
+    return getMeetingRequest(allEventTimes, request.getDuration());
   }
 
     // EFFECTS: Returns a cumulative list of all requestAttendees's events from the event list without duplicates
