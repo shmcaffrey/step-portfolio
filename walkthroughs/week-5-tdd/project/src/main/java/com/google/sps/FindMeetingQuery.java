@@ -150,8 +150,8 @@ public final class FindMeetingQuery {
   //               Event:       [-----]  or [----]   or [----]
   //               Proposed:  [---------]     [----]      [--]
   //             in the cases above the proposed time end would stop at the 
-  //             events start, if would never skip an event who's end time intersects it
-  //             because the events are ordered in acending order by end time
+  //             events start, it would never skip an event who's end time intersects it
+  //             because the events are ordered in ascending order by end time
   //  EFFECTS: 
   //         1)  Event:       |--------|
   //             Proposed:       |--|
